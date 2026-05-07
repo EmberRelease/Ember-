@@ -5,11 +5,9 @@ const Anthropic = require("@anthropic-ai/sdk");
 
 const app = express();
 
-// Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session setup — fine for early development, we can swap MemoryStore later
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "ember-dev-secret",
@@ -18,14 +16,12 @@ app.use(
   })
 );
 
-// Serve the frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Simple helper to ensure session memory exists
 function getSessionMemory(req) {
   if (!req.session.memory) {
     req.session.memory = [];
@@ -33,12 +29,10 @@ function getSessionMemory(req) {
   return req.session.memory;
 }
 
-// Root route -> index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Chat route
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -48,8 +42,6 @@ app.post("/chat", async (req, res) => {
     }
 
     const memory = getSessionMemory(req);
-
-    // Append the user message to memory
     memory.push({ role: "user", content: message });
 
     const prompt = buildPrompt(memory);
@@ -67,26 +59,21 @@ app.post("/chat", async (req, res) => {
     });
 
     const replyText = extractText(response);
-
-    // Store Ember's reply in memory
     memory.push({ role: "assistant", content: replyText });
 
     res.json({ reply: replyText });
   } catch (error) {
     console.error("Chat error:", error);
     res.status(500).json({
-      error:
-        "Ember ran into an issue reaching the model just now. Please try again.",
+      error: "Ember ran into an issue reaching the model just now. Please try again.",
     });
   }
 });
 
-// Reset current visible thread (but keep session, for now)
 app.post("/reset", (req, res) => {
   try {
-    // For now, clear the conversational memory as well
     if (req.session) {
-      req.session.memory = [];
+      req.session.thread = [];
     }
 
     res.json({ ok: true });
@@ -96,7 +83,20 @@ app.post("/reset", (req, res) => {
   }
 });
 
-// Helper: build the prompt from memory
+app.post("/memory/clear", (req, res) => {
+  try {
+    if (req.session) {
+      req.session.memory = [];
+      req.session.thread = [];
+    }
+
+    res.json({ ok: true, message: "Memory cleared." });
+  } catch (error) {
+    console.error("Memory clear error:", error);
+    res.status(500).json({ error: "Could not clear memory." });
+  }
+});
+
 function buildPrompt(memory) {
   const intro = `
 You are Ember, a calm, reflective conversational partner.
@@ -120,15 +120,15 @@ Guidelines:
   return `${intro}\n\nConversation so far:\n\n${history}\n\nEmber:`;
 }
 
-// Helper: extract plain text from Anthropic response
 function extractText(response) {
   try {
-    if (!response || !response.content) return "I’m here, but I didn’t receive a full reply.";
-    const parts = response.content;
+    if (!response || !response.content) {
+      return "I’m here, but I didn’t receive a full reply.";
+    }
 
-    const textParts = parts
-      .filter((p) => p.type === "text" && typeof p.text === "string")
-      .map((p) => p.text.trim());
+    const textParts = response.content
+      .filter((part) => part.type === "text" && typeof part.text === "string")
+      .map((part) => part.text.trim());
 
     if (textParts.length === 0) {
       return "I’m here, but the model returned an unexpected format.";
@@ -141,7 +141,6 @@ function extractText(response) {
   }
 }
 
-// Start the server
 const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
