@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const Anthropic = require("@anthropic-ai/sdk");
+const path = require("path");
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -11,7 +13,7 @@ const anthropic = new Anthropic({
 });
 
 app.get("/", (req, res) => {
-  res.json({ ok: true, message: "Ember backend is alive." });
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.post("/chat", async (req, res) => {
@@ -23,7 +25,7 @@ app.post("/chat", async (req, res) => {
     }
 
     const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+      model: "claude-sonnet-4-6",
       max_tokens: 400,
       system: "You are Ember, a calm reflective AI. Be clear, warm, honest, and concise. Do not pretend to be human.",
       messages: [
@@ -38,12 +40,13 @@ app.post("/chat", async (req, res) => {
 
     res.json({ reply: text });
   } catch (error) {
-    console.error(error);
+    console.error("Anthropic error:", error.status, error.message, error.error);
     res.status(500).json({ error: "Server error talking to Claude." });
   }
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
