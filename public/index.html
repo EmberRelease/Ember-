@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,15 +29,16 @@
       --radius-lg: 1rem;
       --radius-xl: 1.5rem;
       --color-bg: #12110f;
-      --color-surface: #1a1815;
-      --color-surface-2: #211f1b;
+      --color-surface: #191713;
+      --color-surface-2: #221f1a;
       --color-border: rgba(240, 231, 217, 0.11);
       --color-text: #f4ede3;
       --color-text-muted: #beb1a1;
       --color-text-faint: #8d8377;
-      --color-primary: #db7a37;
-      --color-primary-soft: rgba(219, 122, 55, 0.14);
-      --color-primary-strong: #f39a5a;
+      --color-primary: #c96f33;
+      --color-primary-strong: #ef9c61;
+      --color-success: #7da26a;
+      --color-danger: #c6766f;
       --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.35);
       --font-display: 'Instrument Serif', Georgia, serif;
       --font-body: 'Inter', system-ui, sans-serif;
@@ -47,15 +48,18 @@
     html, body { margin: 0; padding: 0; min-height: 100%; }
 
     body {
+      min-height: 100vh;
       font-family: var(--font-body);
       font-size: var(--text-base);
       line-height: 1.6;
       color: var(--color-text);
       background:
-        radial-gradient(circle at top center, rgba(219, 122, 55, 0.14), transparent 34%),
-        radial-gradient(circle at 20% 20%, rgba(243, 154, 90, 0.08), transparent 22%),
+        radial-gradient(circle at top center, rgba(219, 122, 55, 0.12), transparent 34%),
+        radial-gradient(circle at 20% 20%, rgba(243, 154, 90, 0.06), transparent 22%),
         linear-gradient(180deg, #141210 0%, #0f0e0c 100%);
     }
+
+    button, textarea { font: inherit; }
 
     .app-shell {
       min-height: 100vh;
@@ -65,7 +69,7 @@
 
     .sidebar {
       border-right: 1px solid var(--color-border);
-      background: rgba(18, 17, 15, 0.8);
+      background: rgba(18, 17, 15, 0.82);
       backdrop-filter: blur(16px);
       padding: var(--space-8);
       display: flex;
@@ -84,7 +88,8 @@
       height: 18px;
       border-radius: 999px;
       background: radial-gradient(circle at 35% 35%, #ffd2a7 0%, var(--color-primary-strong) 38%, #7d2f06 100%);
-      box-shadow: 0 0 24px rgba(219, 122, 55, 0.45);
+      box-shadow: 0 0 24px rgba(219, 122, 55, 0.35);
+      flex: 0 0 auto;
     }
 
     .brand-word {
@@ -93,10 +98,9 @@
       letter-spacing: 0.02em;
     }
 
-    .sidebar-copy {
+    .sidebar-copy, .panel p, .panel li {
       color: var(--color-text-muted);
       font-size: var(--text-sm);
-      max-width: 28ch;
     }
 
     .panel {
@@ -116,12 +120,6 @@
       font-weight: 600;
     }
 
-    .panel p {
-      margin: 0;
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
-    }
-
     .actions {
       display: flex;
       flex-direction: column;
@@ -138,18 +136,28 @@
       font-weight: 600;
       text-align: left;
       cursor: pointer;
+      min-height: 48px;
       transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+      position: relative;
+      z-index: 2;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled), .btn:focus-visible:not(:disabled) {
       background: rgba(255,255,255,0.06);
       border-color: rgba(243, 154, 90, 0.26);
       transform: translateY(-1px);
+      outline: none;
     }
 
     .btn.primary {
-      background: linear-gradient(180deg, rgba(243, 154, 90, 0.18), rgba(219, 122, 55, 0.1));
+      background: rgba(219, 122, 55, 0.12);
       border-color: rgba(243, 154, 90, 0.26);
+    }
+
+    .btn:disabled, .send:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .main {
@@ -195,7 +203,51 @@
       flex-direction: column;
       padding: var(--space-8) var(--space-10) var(--space-10);
       gap: var(--space-6);
+      min-height: 0;
     }
+
+    .status-bar {
+      max-width: 860px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      color: var(--color-text-faint);
+      font-size: var(--text-sm);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 0.45rem 0.7rem;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--color-success);
+      box-shadow: 0 0 0 6px rgba(125, 162, 106, 0.08);
+    }
+
+    .flash {
+      max-width: 860px;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      font-size: var(--text-sm);
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .flash.show { display: block; }
+    .flash.info { background: rgba(255,255,255,0.03); color: var(--color-text-muted); }
+    .flash.success { background: rgba(125, 162, 106, 0.12); color: #d9ead0; border-color: rgba(125, 162, 106, 0.22); }
+    .flash.error { background: rgba(198, 118, 111, 0.12); color: #f0d6d3; border-color: rgba(198, 118, 111, 0.22); }
 
     .conversation {
       flex: 1;
@@ -203,6 +255,8 @@
       flex-direction: column;
       gap: var(--space-5);
       max-width: 860px;
+      overflow: auto;
+      padding-right: var(--space-2);
     }
 
     .message {
@@ -239,6 +293,10 @@
       padding: var(--space-5) var(--space-5) var(--space-4);
     }
 
+    .message.user .card {
+      background: rgba(255,255,255,0.015);
+    }
+
     .meta {
       display: flex;
       align-items: center;
@@ -263,15 +321,12 @@
       margin: 0;
       color: var(--color-text);
       max-width: 66ch;
-    }
-
-    .message.user .card {
-      background: rgba(255,255,255,0.015);
+      white-space: pre-wrap;
     }
 
     .composer {
       max-width: 860px;
-      background: rgba(20, 18, 16, 0.88);
+      background: rgba(20, 18, 16, 0.94);
       border: 1px solid rgba(243, 154, 90, 0.14);
       border-radius: calc(var(--radius-xl) + 6px);
       padding: var(--space-4);
@@ -279,6 +334,7 @@
       position: sticky;
       bottom: var(--space-6);
       backdrop-filter: blur(18px);
+      z-index: 5;
     }
 
     .composer label {
@@ -301,11 +357,11 @@
       font-family: var(--font-body);
       font-size: var(--text-base);
       line-height: 1.7;
+      position: relative;
+      z-index: 1;
     }
 
-    textarea::placeholder {
-      color: #857a6e;
-    }
+    textarea::placeholder { color: #857a6e; }
 
     .composer-row {
       display: flex;
@@ -325,39 +381,47 @@
 
     .send {
       border: none;
-      background: linear-gradient(180deg, var(--color-primary-strong), var(--color-primary));
-      color: #24160d;
+      background: var(--color-primary);
+      color: #22150c;
       font-weight: 700;
       border-radius: 999px;
       padding: 0.9rem 1.3rem;
       cursor: pointer;
       font-size: var(--text-sm);
-      min-width: 132px;
+      min-width: 160px;
+      min-height: 48px;
+      transition: background 180ms ease, transform 180ms ease;
+      position: relative;
+      z-index: 10;
+      pointer-events: auto;
     }
 
-    .rubric {
-      margin-top: var(--space-4);
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3);
+    .send:hover:not(:disabled), .send:focus-visible:not(:disabled) {
+      background: var(--color-primary-strong);
+      transform: translateY(-1px);
+      outline: none;
     }
 
-    .rubric-item {
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-      background: rgba(255,255,255,0.02);
+    .typing {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
     }
 
-    .rubric-item strong {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-size: var(--text-sm);
+    .typing span {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--color-text-faint);
+      animation: pulse 1.15s infinite ease-in-out;
     }
 
-    .rubric-item span {
-      color: var(--color-text-muted);
-      font-size: var(--text-sm);
+    .typing span:nth-child(2) { animation-delay: 0.12s; }
+    .typing span:nth-child(3) { animation-delay: 0.24s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-2px); }
     }
 
     @media (max-width: 1024px) {
@@ -376,8 +440,7 @@
       .hero h1 { max-width: 100%; }
       .message { grid-template-columns: 1fr; }
       .avatar { display: none; }
-      .rubric { grid-template-columns: 1fr; }
-      .composer-row { flex-direction: column; align-items: flex-start; }
+      .composer-row, .status-bar { flex-direction: column; align-items: flex-start; }
       .send { width: 100%; }
     }
   </style>
@@ -390,51 +453,22 @@
           <div class="brand-mark" aria-hidden="true"></div>
           <div class="brand-word">Ember</div>
         </div>
-        <p class="sidebar-copy">
-          A reflective space for turning thought into clearer language, and clearer language into more meaningful human connection.
-        </p>
+        <p class="sidebar-copy">A reflective space for turning thought into clearer language, and clearer language into more meaningful human connection.</p>
       </div>
 
       <div class="panel">
         <h2>What Ember is</h2>
-        <p>
-          Not a feed, not a forum, not a therapist. Ember is a calm bridge between what you feel, what you can name, and what you may be ready to bring into your life.
-        </p>
+        <p>Not a feed, not a forum, not a therapist. Ember is a calm bridge between what you feel, what you can name, and what you may be ready to bring into your life.</p>
       </div>
 
       <div class="actions">
-        <button class="btn primary">Begin a new thread</button>
-        <button class="btn">Clear remembered context</button>
+        <button class="btn primary" id="newThreadBtn" type="button">Begin a new thread</button>
+        <button class="btn" id="clearMemoryBtn" type="button">Clear remembered context</button>
       </div>
 
       <div class="panel">
-        <h2>Ease of use rubric</h2>
-        <div class="rubric">
-          <div class="rubric-item">
-            <strong>Clarity</strong>
-            <span>Users know what Ember is, how to begin, and how to reset.</span>
-          </div>
-          <div class="rubric-item">
-            <strong>Calmness</strong>
-            <span>The interface lowers pressure instead of feeling busy or transactional.</span>
-          </div>
-          <div class="rubric-item">
-            <strong>Distinctiveness</strong>
-            <span>It feels unlike a default chatbot shell or support widget.</span>
-          </div>
-          <div class="rubric-item">
-            <strong>Control</strong>
-            <span>Memory and thread boundaries are visible and understandable.</span>
-          </div>
-          <div class="rubric-item">
-            <strong>Warmth</strong>
-            <span>The design feels human-centered without becoming saccharine.</span>
-          </div>
-          <div class="rubric-item">
-            <strong>Flow</strong>
-            <span>Writing, reading, and reflecting all feel effortless.</span>
-          </div>
-        </div>
+        <h2>Ease of use</h2>
+        <p>To feel 5/5, Ember should feel calm, obvious, warm, and unlike a generic chat widget. The interface should invite honesty without demanding performance.</p>
       </div>
     </aside>
 
@@ -445,13 +479,18 @@
           Reflective space
         </div>
         <h1>Become more real, then more reachable.</h1>
-        <p>
-          Ember should feel like entering a room, not opening a chatbot. The interface slows the pace, softens the pressure, and leaves enough space for thought to become language before it becomes movement.
-        </p>
+        <p>Ember should feel like entering a room, not opening a chatbot. The interface slows the pace, softens the pressure, and leaves enough space for thought to become language before it becomes movement.</p>
       </section>
 
       <section class="chat-wrap">
-        <div class="conversation">
+        <div class="status-bar">
+          <div class="status-pill"><span class="status-dot"></span><span id="statusText">Ready for reflection</span></div>
+          <div id="threadNote">Current thread is local to this session.</div>
+        </div>
+
+        <div id="flash" class="flash info" aria-live="polite"></div>
+
+        <div class="conversation" id="conversation" aria-live="polite">
           <article class="message ember">
             <div class="avatar ember">Em</div>
             <div class="card">
@@ -459,51 +498,210 @@
                 <div class="name">Ember</div>
                 <div class="role-note">Bridge, not destination</div>
               </div>
-              <p>
-                What feels most alive for you right now doesn't have to arrive perfectly formed. Start where it is. Ember's job is to help you get closer to what is true, and then closer to what can be lived.
-              </p>
-            </div>
-          </article>
-
-          <article class="message user">
-            <div class="avatar">You</div>
-            <div class="card">
-              <div class="meta">
-                <div class="name">You</div>
-                <div class="role-note">Entry</div>
-              </div>
-              <p>
-                I want to connect with people who feel what I feel, but I don't want it to become another social media performance.
-              </p>
-            </div>
-          </article>
-
-          <article class="message ember">
-            <div class="avatar ember">Em</div>
-            <div class="card">
-              <div class="meta">
-                <div class="name">Ember</div>
-                <div class="role-note">Disciplined wonder</div>
-              </div>
-              <p>
-                That tension deserves respect. You want resonance, not audience. The shape of what you're reaching for is probably smaller, slower, and more honest than a platform. The next real move may not be finding everyone. It may be naming this clearly enough that one person in your life can meet you there.
-              </p>
+              <p>What feels most alive for you right now doesn't have to arrive perfectly formed. Start where it is.</p>
             </div>
           </article>
         </div>
 
-        <div class="composer">
+        <form class="composer" id="composerForm">
           <label for="entry">What feels alive right now</label>
-          <textarea id="entry" placeholder="You don’t need the perfect words. Start with what feels true, unfinished, heavy, hopeful, or hard to name."></textarea>
+          <textarea id="entry" name="message" placeholder="You don’t need the perfect words. Start with what feels true, unfinished, heavy, hopeful, or hard to name."></textarea>
           <div class="composer-row">
-            <div class="composer-hint">
-              Ease of use at 5/5 means the interface feels calm, obvious, and unlike a generic AI chat shell. It should invite honesty without demanding performance.
-            </div>
-            <button class="send">Offer this to Ember</button>
+            <div class="composer-hint">Press the button or hit Enter to send. Use Shift + Enter for a new line.</div>
+            <button class="send" id="sendBtn" type="submit">Offer this to Ember</button>
           </div>
-        </div>
+        </form>
       </section>
     </main>
   </div>
+
+  <script>
+    const conversation = document.getElementById('conversation');
+    const composerForm = document.getElementById('composerForm');
+    const entry = document.getElementById('entry');
+    const sendBtn = document.getElementById('sendBtn');
+    const newThreadBtn = document.getElementById('newThreadBtn');
+    const clearMemoryBtn = document.getElementById('clearMemoryBtn');
+    const flash = document.getElementById('flash');
+    const statusText = document.getElementById('statusText');
+    const threadNote = document.getElementById('threadNote');
+
+    let inFlight = false;
+    let typingNode = null;
+
+    function setBusy(next) {
+      inFlight = next;
+      sendBtn.disabled = next;
+      newThreadBtn.disabled = next;
+      clearMemoryBtn.disabled = next;
+      statusText.textContent = next ? 'Listening and responding' : 'Ready for reflection';
+    }
+
+    function showFlash(message, type = 'info') {
+      flash.className = `flash ${type} show`;
+      flash.textContent = message;
+    }
+
+    function clearFlash() {
+      flash.className = 'flash info';
+      flash.textContent = '';
+    }
+
+    function scrollConversation() {
+      conversation.scrollTop = conversation.scrollHeight;
+    }
+
+    function createMessage(role, text, note) {
+      const article = document.createElement('article');
+      article.className = `message ${role === 'user' ? 'user' : 'ember'}`;
+      article.innerHTML = `
+        <div class="avatar ${role === 'user' ? '' : 'ember'}">${role === 'user' ? 'You' : 'Em'}</div>
+        <div class="card">
+          <div class="meta">
+            <div class="name">${role === 'user' ? 'You' : 'Ember'}</div>
+            <div class="role-note">${note}</div>
+          </div>
+          <p></p>
+        </div>
+      `;
+      article.querySelector('p').textContent = text;
+      return article;
+    }
+
+    function addMessage(role, text, note) {
+      const node = createMessage(role, text, note);
+      conversation.appendChild(node);
+      scrollConversation();
+      return node;
+    }
+
+    function showTyping() {
+      if (typingNode) return;
+      typingNode = document.createElement('article');
+      typingNode.className = 'message ember';
+      typingNode.innerHTML = `
+        <div class="avatar ember">Em</div>
+        <div class="card">
+          <div class="meta">
+            <div class="name">Ember</div>
+            <div class="role-note">Responding</div>
+          </div>
+          <div class="typing" aria-label="Ember is thinking"><span></span><span></span><span></span></div>
+        </div>
+      `;
+      conversation.appendChild(typingNode);
+      scrollConversation();
+    }
+
+    function hideTyping() {
+      if (typingNode) {
+        typingNode.remove();
+        typingNode = null;
+      }
+    }
+
+    function extractReply(data) {
+      if (!data) return '';
+      if (typeof data === 'string') return data;
+      return data.reply || data.response || data.message || data.output || data.text || '';
+    }
+
+    async function postJson(url, body) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      const payload = contentType.includes('application/json') ? await response.json() : await response.text();
+
+      if (!response.ok) {
+        const detail = typeof payload === 'string' ? payload : extractReply(payload) || payload.error || response.statusText;
+        throw new Error(detail || 'Request failed');
+      }
+
+      return payload;
+    }
+
+    async function sendMessage() {
+      if (inFlight) return;
+
+      const message = entry.value.trim();
+      if (!message) {
+        showFlash('Write something first, even if it is unfinished.', 'error');
+        return;
+      }
+
+      clearFlash();
+      addMessage('user', message, 'Entry');
+      entry.value = '';
+      setBusy(true);
+      showTyping();
+
+      try {
+        const data = await postJson('/chat', { message });
+        hideTyping();
+        const reply = extractReply(data) || 'I am here. Say that again in the simplest honest way you can.';
+        addMessage('assistant', reply, 'Disciplined wonder');
+        threadNote.textContent = 'Thread updated just now.';
+      } catch (error) {
+        hideTyping();
+        showFlash(`Ember could not respond right now. ${error.message}`, 'error');
+      } finally {
+        setBusy(false);
+        entry.focus();
+      }
+    }
+
+    composerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      sendMessage();
+    });
+
+    sendBtn.addEventListener('click', function(event) {
+      event.preventDefault();
+      sendMessage();
+    });
+
+    entry.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    newThreadBtn.addEventListener('click', async function() {
+      if (inFlight) return;
+      clearFlash();
+      setBusy(true);
+      try {
+        await postJson('/reset', {});
+        conversation.innerHTML = '';
+        addMessage('assistant', "We are starting fresh. Begin with what feels most true right now.", 'Fresh thread');
+        threadNote.textContent = 'A new thread has started.';
+        showFlash('Started a new thread.', 'success');
+      } catch (error) {
+        showFlash(`Could not start a new thread. ${error.message}`, 'error');
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    clearMemoryBtn.addEventListener('click', async function() {
+      if (inFlight) return;
+      clearFlash();
+      setBusy(true);
+      try {
+        await postJson('/memory/clear', {});
+        threadNote.textContent = 'Remembered context has been cleared.';
+        showFlash('Remembered context cleared.', 'success');
+      } catch (error) {
+        showFlash(`Could not clear remembered context. ${error.message}`, 'error');
+      } finally {
+        setBusy(false);
+      }
+    });
+  </script>
 </body>
 </html>
