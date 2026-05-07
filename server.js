@@ -5,9 +5,11 @@ const Anthropic = require("@anthropic-ai/sdk");
 
 const app = express();
 
+// Core middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Session setup (MemoryStore is OK for early development)
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "ember-dev-secret",
@@ -16,12 +18,14 @@ app.use(
   })
 );
 
+// Serve static frontend from ./public
 app.use(express.static(path.join(__dirname, "public")));
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// Ensure a memory array exists on the session
 function getSessionMemory(req) {
   if (!req.session.memory) {
     req.session.memory = [];
@@ -29,10 +33,12 @@ function getSessionMemory(req) {
   return req.session.memory;
 }
 
+// Root route -> public/index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Main chat route
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -47,7 +53,9 @@ app.post("/chat", async (req, res) => {
     const prompt = buildPrompt(memory);
 
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      // IMPORTANT: replace this with the exact current Sonnet/Claude model
+      // name shown in your Anthropic dashboard if needed.
+      model: "claude-3-opus-20240229",
       max_tokens: 800,
       temperature: 0.4,
       messages: [
@@ -65,11 +73,13 @@ app.post("/chat", async (req, res) => {
   } catch (error) {
     console.error("Chat error:", error);
     res.status(500).json({
-      error: "Ember ran into an issue reaching the model just now. Please try again.",
+      error:
+        "Ember ran into an issue reaching the model just now. Please try again.",
     });
   }
 });
 
+// New thread (UI reset) — clears visible thread, not whole session identity
 app.post("/reset", (req, res) => {
   try {
     if (req.session) {
@@ -83,6 +93,7 @@ app.post("/reset", (req, res) => {
   }
 });
 
+// Clear remembered context — stronger operation than /reset
 app.post("/memory/clear", (req, res) => {
   try {
     if (req.session) {
@@ -97,6 +108,7 @@ app.post("/memory/clear", (req, res) => {
   }
 });
 
+// Build the conversational prompt from memory
 function buildPrompt(memory) {
   const intro = `
 You are Ember, a calm, reflective conversational partner.
@@ -120,6 +132,7 @@ Guidelines:
   return `${intro}\n\nConversation so far:\n\n${history}\n\nEmber:`;
 }
 
+// Extract plain text from Anthropic response
 function extractText(response) {
   try {
     if (!response || !response.content) {
@@ -141,6 +154,7 @@ function extractText(response) {
   }
 }
 
+// Start server
 const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
