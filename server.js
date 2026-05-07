@@ -55,7 +55,7 @@ app.post("/chat", async (req, res) => {
     const response = await anthropic.messages.create({
       // IMPORTANT: replace this with the exact current Sonnet/Claude model
       // name shown in your Anthropic dashboard if needed.
-      model: "claude-3-opus-20240229",
+      model: "claude-sonnet-4-6",
       max_tokens: 800,
       temperature: 0.4,
       messages: [
