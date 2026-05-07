@@ -49,6 +49,19 @@
       --space-10: 2.5rem;
       --space-12: 3rem;
       --space-16: 4rem;
+
+      --ember-glow-a: rgba(1, 105, 111, 0.10);
+      --ember-glow-b: rgba(182, 108, 58, 0.08);
+      --ember-sheen: rgba(255, 255, 255, 0.06);
+      --ember-primary-highlight: rgba(1, 105, 111, 0.08);
+      --ember-user-bubble: rgba(1, 105, 111, 0.08);
+      --ember-stage-shadow: 0 18px 50px rgba(20, 20, 20, 0.08);
+
+      --depth-bg-top: rgba(1, 105, 111, 0.08);
+      --depth-bg-bottom: rgba(182, 108, 58, 0.05);
+      --depth-mirror-top: rgba(255,255,255,0.10);
+      --depth-mirror-bottom: rgba(255,255,255,0.02);
+      --depth-line: rgba(1, 105, 111, 0.10);
     }
 
     [data-theme="dark"] {
@@ -69,6 +82,19 @@
       --color-error: #d163a7;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18);
       --shadow-md: 0 20px 50px rgba(0, 0, 0, 0.28);
+
+      --ember-glow-a: rgba(110, 164, 171, 0.14);
+      --ember-glow-b: rgba(196, 122, 74, 0.10);
+      --ember-sheen: rgba(255, 255, 255, 0.07);
+      --ember-primary-highlight: rgba(110, 164, 171, 0.13);
+      --ember-user-bubble: rgba(110, 164, 171, 0.11);
+      --ember-stage-shadow: 0 26px 70px rgba(0, 0, 0, 0.32);
+
+      --depth-bg-top: rgba(110, 164, 171, 0.08);
+      --depth-bg-bottom: rgba(196, 122, 74, 0.06);
+      --depth-mirror-top: rgba(255,255,255,0.08);
+      --depth-mirror-bottom: rgba(255,255,255,0.012);
+      --depth-line: rgba(110, 164, 171, 0.12);
     }
 
     * {
@@ -89,13 +115,26 @@
       font-size: var(--text-base);
       color: var(--color-text);
       background:
-        radial-gradient(circle at top center, rgba(110, 164, 171, 0.08), transparent 32%),
-        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.03), transparent 26%),
+        radial-gradient(circle at top center, var(--depth-bg-top), transparent 34%),
+        radial-gradient(circle at bottom left, var(--depth-bg-bottom), transparent 28%),
         var(--color-bg);
       overflow: hidden;
+      transition: background 600ms ease, color 220ms ease;
     }
 
-    button, input {
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 8%, var(--ember-sheen), transparent 34%),
+        radial-gradient(circle at 20% 100%, rgba(255,255,255,0.02), transparent 28%);
+      opacity: 1;
+      transition: opacity 500ms ease, background 600ms ease;
+    }
+
+    button, textarea {
       font: inherit;
     }
 
@@ -160,8 +199,14 @@
       text-transform: uppercase;
     }
 
+    .topbar-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .reset-button,
     .theme-toggle {
-      min-width: 44px;
       min-height: 44px;
       border-radius: var(--radius-full);
       border: 1px solid var(--color-border);
@@ -171,11 +216,30 @@
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(12px);
+      transition: background 180ms ease, color 180ms ease, border-color 180ms ease, opacity 180ms ease, transform 180ms ease;
+    }
+
+    .reset-button {
+      padding: 0 16px;
+      color: var(--color-text-muted);
+      letter-spacing: 0.01em;
+    }
+
+    .reset-button:hover {
+      color: var(--color-text);
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle {
+      min-width: 44px;
+      padding: 0 12px;
     }
 
     .theme-toggle:hover {
-      background: var(--color-primary-highlight);
+      background: var(--ember-primary-highlight);
       border-color: rgba(110, 164, 171, 0.28);
+      transform: translateY(-1px);
     }
 
     .main-stage {
@@ -191,13 +255,18 @@
       position: relative;
       overflow: hidden;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015)),
+        linear-gradient(180deg, var(--depth-mirror-top), var(--depth-mirror-bottom)),
         var(--color-surface);
       border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--ember-stage-shadow);
       backdrop-filter: blur(24px);
       display: grid;
       grid-template-rows: auto 1fr auto;
+      transition:
+        background 650ms ease,
+        border-color 360ms ease,
+        box-shadow 650ms ease,
+        transform 400ms ease;
     }
 
     .mirror::before {
@@ -208,6 +277,19 @@
         linear-gradient(120deg, rgba(255,255,255,0.08), transparent 26%, transparent 72%, rgba(255,255,255,0.05)),
         radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 38%);
       pointer-events: none;
+      transition: opacity 500ms ease, background 650ms ease;
+    }
+
+    .mirror::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% -10%, var(--ember-glow-a), transparent 34%),
+        radial-gradient(circle at 15% 120%, var(--ember-glow-b), transparent 30%);
+      opacity: 0.95;
+      transition: background 700ms ease, opacity 500ms ease;
     }
 
     .hero {
@@ -281,8 +363,8 @@
     .message.user .message-body {
       margin-left: auto;
       text-align: right;
-      background: var(--color-primary-highlight);
-      border-color: rgba(110, 164, 171, 0.22);
+      background: var(--ember-user-bubble);
+      border-color: var(--depth-line);
     }
 
     .message.ember .message-body {
@@ -300,6 +382,7 @@
       border-radius: 22px;
       padding: 18px 20px;
       backdrop-filter: blur(10px);
+      transition: background 400ms ease, border-color 400ms ease, color 220ms ease;
     }
 
     .message.is-thinking .message-body {
@@ -334,6 +417,7 @@
       gap: 12px;
       align-items: end;
       backdrop-filter: blur(18px);
+      transition: border-color 360ms ease, background 500ms ease, box-shadow 500ms ease;
     }
 
     .composer-field {
@@ -377,16 +461,21 @@
       justify-content: center;
       align-self: center;
       box-shadow: 0 10px 24px rgba(1, 105, 111, 0.22);
+      transition: background 180ms ease, opacity 180ms ease, box-shadow 240ms ease, transform 180ms ease;
     }
 
     .send-button:hover {
       background: var(--color-primary-hover);
+      transform: translateY(-1px);
     }
 
-    .send-button:disabled {
+    .send-button:disabled,
+    .reset-button:disabled,
+    .theme-toggle:disabled {
       opacity: 0.55;
       cursor: not-allowed;
       box-shadow: none;
+      transform: none;
     }
 
     .footer-note {
@@ -416,6 +505,46 @@
     .empty-state p {
       color: var(--color-text-muted);
       max-width: 42ch;
+    }
+
+    .mirror[data-depth="1"] {
+      --depth-bg-top: rgba(110, 164, 171, 0.10);
+      --depth-bg-bottom: rgba(196, 122, 74, 0.07);
+      --ember-glow-a: rgba(110, 164, 171, 0.18);
+      --ember-glow-b: rgba(196, 122, 74, 0.12);
+      --depth-mirror-top: rgba(255,255,255,0.09);
+      --depth-line: rgba(110, 164, 171, 0.16);
+      --ember-user-bubble: rgba(110, 164, 171, 0.14);
+    }
+
+    .mirror[data-depth="2"] {
+      --depth-bg-top: rgba(130, 120, 194, 0.10);
+      --depth-bg-bottom: rgba(196, 122, 74, 0.08);
+      --ember-glow-a: rgba(126, 123, 201, 0.17);
+      --ember-glow-b: rgba(205, 126, 79, 0.13);
+      --depth-mirror-top: rgba(255,255,255,0.10);
+      --depth-line: rgba(137, 129, 204, 0.17);
+      --ember-user-bubble: rgba(126, 123, 201, 0.12);
+    }
+
+    .mirror[data-depth="3"] {
+      --depth-bg-top: rgba(172, 115, 173, 0.11);
+      --depth-bg-bottom: rgba(219, 138, 87, 0.10);
+      --ember-glow-a: rgba(174, 116, 175, 0.18);
+      --ember-glow-b: rgba(219, 138, 87, 0.15);
+      --depth-mirror-top: rgba(255,255,255,0.11);
+      --depth-line: rgba(186, 129, 186, 0.20);
+      --ember-user-bubble: rgba(174, 116, 175, 0.12);
+    }
+
+    .mirror[data-depth="4"] {
+      --depth-bg-top: rgba(214, 132, 104, 0.13);
+      --depth-bg-bottom: rgba(238, 170, 97, 0.11);
+      --ember-glow-a: rgba(216, 134, 106, 0.20);
+      --ember-glow-b: rgba(235, 172, 100, 0.16);
+      --depth-mirror-top: rgba(255,255,255,0.12);
+      --depth-line: rgba(220, 146, 106, 0.22);
+      --ember-user-bubble: rgba(214, 132, 104, 0.13);
     }
 
     @keyframes riseIn {
@@ -457,6 +586,14 @@
       .send-button {
         justify-self: end;
       }
+
+      .topbar-actions {
+        gap: 8px;
+      }
+
+      .reset-button {
+        padding: 0 12px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -479,15 +616,21 @@
         </div>
       </div>
 
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
+      <div class="topbar-actions">
+        <button class="reset-button" type="button" id="reset-button" aria-label="Reset conversation">
+          New thread
+        </button>
+
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
     </header>
 
     <main class="main-stage">
-      <section class="mirror" aria-label="Conversation with Ember">
+      <section class="mirror" id="mirror" data-depth="0" aria-label="Conversation with Ember">
         <div class="hero">
           <span class="eyebrow">Version 10</span>
           <h1>A surface for clear thought.</h1>
@@ -534,9 +677,10 @@
     const stream = document.getElementById("stream");
     const streamInner = document.getElementById("stream-inner");
     const button = document.getElementById("send-button");
-    const emptyState = document.getElementById("empty-state");
     const themeToggle = document.querySelector("[data-theme-toggle]");
+    const resetButton = document.getElementById("reset-button");
     const root = document.documentElement;
+    const mirror = document.getElementById("mirror");
 
     let currentTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     root.setAttribute("data-theme", currentTheme);
@@ -547,20 +691,10 @@
         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
     }
 
-    updateThemeIcon();
-
-    themeToggle.addEventListener("click", () => {
-      currentTheme = currentTheme === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", currentTheme);
-      updateThemeIcon();
-    });
-
     function autoResize() {
       input.style.height = "0px";
       input.style.height = Math.min(input.scrollHeight, 180) + "px";
     }
-
-    input.addEventListener("input", autoResize);
 
     function scrollToBottom() {
       requestAnimationFrame(() => {
@@ -569,9 +703,40 @@
     }
 
     function removeEmptyState() {
-      if (emptyState) {
-        emptyState.remove();
+      const currentEmpty = document.getElementById("empty-state");
+      if (currentEmpty) {
+        currentEmpty.remove();
       }
+    }
+
+    function restoreEmptyState() {
+      if (document.getElementById("empty-state")) return;
+
+      const state = document.createElement("div");
+      state.className = "empty-state";
+      state.id = "empty-state";
+      state.innerHTML = `
+        <h2>Begin where you are.</h2>
+        <p>
+          Ask plainly. Think aloud. Bring a decision, a fear, an idea, or a half-formed question.
+        </p>
+      `;
+
+      streamInner.appendChild(state);
+    }
+
+    function getConversationDepth() {
+      const totalMessages = streamInner.querySelectorAll(".message").length;
+      if (totalMessages >= 12) return 4;
+      if (totalMessages >= 8) return 3;
+      if (totalMessages >= 5) return 2;
+      if (totalMessages >= 2) return 1;
+      return 0;
+    }
+
+    function applyConversationDepth() {
+      const depth = getConversationDepth();
+      mirror.setAttribute("data-depth", String(depth));
     }
 
     function addMessage(role, text, options = {}) {
@@ -591,6 +756,8 @@
       wrap.appendChild(roleLabel);
       wrap.appendChild(body);
       streamInner.appendChild(wrap);
+
+      applyConversationDepth();
       scrollToBottom();
 
       return wrap;
@@ -613,6 +780,52 @@
 
       return data.reply;
     }
+
+    async function resetConversation() {
+      const response = await fetch("/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not reset conversation.");
+      }
+
+      streamInner.innerHTML = "";
+      restoreEmptyState();
+      input.value = "";
+      input.style.height = "56px";
+      mirror.setAttribute("data-depth", "0");
+      input.focus();
+    }
+
+    updateThemeIcon();
+    applyConversationDepth();
+    autoResize();
+
+    themeToggle.addEventListener("click", () => {
+      currentTheme = currentTheme === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", currentTheme);
+      updateThemeIcon();
+    });
+
+    input.addEventListener("input", autoResize);
+
+    resetButton.addEventListener("click", async () => {
+      resetButton.disabled = true;
+
+      try {
+        await resetConversation();
+      } catch (error) {
+        addMessage("ember", "I couldn't reset the thread just now.", { error: true });
+      } finally {
+        resetButton.disabled = false;
+      }
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -639,6 +852,7 @@
       } finally {
         button.disabled = false;
         input.focus();
+        applyConversationDepth();
         scrollToBottom();
       }
     });
@@ -649,8 +863,6 @@
         form.requestSubmit();
       }
     });
-
-    autoResize();
   </script>
 </body>
 </html>
