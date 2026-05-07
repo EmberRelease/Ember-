@@ -2,143 +2,148 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const Anthropic = require("@anthropic-ai/sdk");
-const {
-  ensureMemoryFile,
-  updateMemory,
-  getMemory,
-  clearMemory,
-  formatMemoryForPrompt
-} = require("./memory");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
-ensureMemoryFile();
-
+// Basic middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
+// Session setup — fine for early development, we can swap MemoryStore later
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "ember-dev-secret-change-this",
+    secret: process.env.SESSION_SECRET || "ember-dev-secret",
     resave: false,
     saveUninitialized: true,
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 7
-    }
   })
 );
 
-app.use((req, res, next) => {
-  if (!req.session.conversation) {
-    req.session.conversation = [];
+// Serve the frontend
+app.use(express.static(path.join(__dirname, "public")));
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
+
+// Simple helper to ensure session memory exists
+function getSessionMemory(req) {
+  if (!req.session.memory) {
+    req.session.memory = [];
   }
-  next();
-});
+  return req.session.memory;
+}
 
+// Root route -> index.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("/memory", (req, res) => {
-  const memory = getMemory(req.sessionID);
-  res.json({
-    sessionId: req.sessionID,
-    memory
-  });
-});
-
-app.post("/memory/clear", (req, res) => {
-  clearMemory(req.sessionID);
-  res.json({
-    ok: true,
-    message: "Persistent memory cleared."
-  });
-});
-
-app.post("/reset", (req, res) => {
-  req.session.conversation = [];
-  res.json({
-    ok: true,
-    message: "Conversation reset."
-  });
-});
-
+// Chat route
 app.post("/chat", async (req, res) => {
   try {
-    const userMessage = String(req.body.message || "").trim();
+    const { message } = req.body;
 
-    if (!userMessage) {
-      return res.status(400).json({
-        error: "Message is required."
-      });
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: "Message is required." });
     }
 
-    req.session.conversation.push({
-      role: "user",
-      content: userMessage
-    });
+    const memory = getSessionMemory(req);
 
-    updateMemory(req.sessionID, userMessage);
-    const memory = getMemory(req.sessionID);
-    const memoryBlock = formatMemoryForPrompt(memory);
+    // Append the user message to memory
+    memory.push({ role: "user", content: message });
 
-    const recentConversation = req.session.conversation.slice(-10).map((item) => ({
-      role: item.role,
-      content: item.content
-    }));
-
-    const systemPrompt = [
-      "You are Ember.",
-      "Ember is calm, perceptive, emotionally intelligent, and precise.",
-      "Do not sound generic, corporate, or like a productivity assistant.",
-      "Prefer clarity, warmth, directness, and emotional accuracy.",
-      "Keep responses grounded and natural.",
-      "Use the memory context only when it genuinely helps continuity.",
-      "Do not mention hidden memory unless the user asks.",
-      "",
-      "Relevant memory:",
-      memoryBlock
-    ].join("\n");
+    const prompt = buildPrompt(memory);
 
     const response = await anthropic.messages.create({
-      model: "claude-3-7-sonnet-latest",
-      max_tokens: 700,
-      system: systemPrompt,
-      messages: recentConversation
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 800,
+      temperature: 0.4,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
     });
 
-    const reply =
-      response.content &&
-      response.content[0] &&
-      response.content[0].type === "text"
-        ? response.content[0].text
-        : "I’m here, but I couldn’t form a proper response.";
+    const replyText = extractText(response);
 
-    req.session.conversation.push({
-      role: "assistant",
-      content: reply
-    });
+    // Store Ember's reply in memory
+    memory.push({ role: "assistant", content: replyText });
 
-    res.json({
-      reply
-    });
+    res.json({ reply: replyText });
   } catch (error) {
     console.error("Chat error:", error);
-
     res.status(500).json({
-      error: error.message || "Something went wrong."
+      error:
+        "Ember ran into an issue reaching the model just now. Please try again.",
     });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Reset current visible thread (but keep session, for now)
+app.post("/reset", (req, res) => {
+  try {
+    // For now, clear the conversational memory as well
+    if (req.session) {
+      req.session.memory = [];
+    }
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error("Reset error:", error);
+    res.status(500).json({ error: "Could not reset conversation." });
+  }
+});
+
+// Helper: build the prompt from memory
+function buildPrompt(memory) {
+  const intro = `
+You are Ember, a calm, reflective conversational partner.
+You speak in clear, grounded language.
+You help the user think through decisions, fears, ideas, and half-formed questions.
+
+Guidelines:
+- Stay warm but not cheesy.
+- Prefer depth over breadth.
+- Ask gentle clarifying questions when needed.
+- Summarize what you heard before suggesting next steps.
+  `.trim();
+
+  const history = memory
+    .map((turn) => {
+      const who = turn.role === "user" ? "User" : "Ember";
+      return `${who}: ${turn.content}`;
+    })
+    .join("\n\n");
+
+  return `${intro}\n\nConversation so far:\n\n${history}\n\nEmber:`;
+}
+
+// Helper: extract plain text from Anthropic response
+function extractText(response) {
+  try {
+    if (!response || !response.content) return "I’m here, but I didn’t receive a full reply.";
+    const parts = response.content;
+
+    const textParts = parts
+      .filter((p) => p.type === "text" && typeof p.text === "string")
+      .map((p) => p.text.trim());
+
+    if (textParts.length === 0) {
+      return "I’m here, but the model returned an unexpected format.";
+    }
+
+    return textParts.join("\n\n");
+  } catch (error) {
+    console.error("Error extracting text:", error);
+    return "I’m here, but I had trouble reading the model’s response.";
+  }
+}
+
+// Start the server
+const port = process.env.PORT || 8080;
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
