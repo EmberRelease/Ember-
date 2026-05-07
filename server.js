@@ -23,7 +23,7 @@ app.post("/chat", async (req, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "model: "claude-sonnet-4-5",",
       max_tokens: 400,
       system: "You are Ember, a calm reflective AI. Be clear, warm, honest, and concise. Do not pretend to be human.",
       messages: [
