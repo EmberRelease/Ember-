@@ -4,42 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ember</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
-    :root, [data-theme="light"] {
-      --color-bg: #f7f6f2;
-      --color-surface: #f9f8f5;
-      --color-surface-2: #fbfbf9;
-      --color-surface-offset: #f3f0ec;
-      --color-surface-dynamic: #e6e4df;
-      --color-divider: #dcd9d5;
-      --color-border: rgba(40, 37, 29, 0.12);
-      --color-text: #28251d;
-      --color-text-muted: #7a7974;
-      --color-text-faint: #bab9b4;
-      --color-text-inverse: #f9f8f4;
-      --color-primary: #01696f;
-      --color-primary-hover: #0c4e54;
-      --color-primary-highlight: rgba(1, 105, 111, 0.08);
-      --color-error: #a12c7b;
-      --shadow-sm: 0 1px 2px rgba(20, 20, 20, 0.05);
-      --shadow-md: 0 10px 30px rgba(20, 20, 20, 0.08);
-      --radius-sm: 12px;
-      --radius-md: 18px;
-      --radius-lg: 24px;
-      --radius-full: 999px;
-      --font-body: 'Inter', sans-serif;
-      --font-display: 'Instrument Serif', serif;
-      --text-xs: clamp(0.75rem, 0.72rem + 0.2vw, 0.875rem);
-      --text-sm: clamp(0.9rem, 0.84rem + 0.2vw, 1rem);
-      --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-      --text-lg: clamp(1.2rem, 1.08rem + 0.45vw, 1.5rem);
-      --text-xl: clamp(1.7rem, 1.35rem + 1vw, 2.4rem);
-      --text-2xl: clamp(2.5rem, 1.7rem + 2vw, 4.4rem);
+    :root {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: 0.25rem;
       --space-2: 0.5rem;
       --space-3: 0.75rem;
       --space-4: 1rem;
@@ -49,820 +24,486 @@
       --space-10: 2.5rem;
       --space-12: 3rem;
       --space-16: 4rem;
-
-      --ember-glow-a: rgba(1, 105, 111, 0.10);
-      --ember-glow-b: rgba(182, 108, 58, 0.08);
-      --ember-sheen: rgba(255, 255, 255, 0.06);
-      --ember-primary-highlight: rgba(1, 105, 111, 0.08);
-      --ember-user-bubble: rgba(1, 105, 111, 0.08);
-      --ember-stage-shadow: 0 18px 50px rgba(20, 20, 20, 0.08);
-
-      --depth-bg-top: rgba(1, 105, 111, 0.08);
-      --depth-bg-bottom: rgba(182, 108, 58, 0.05);
-      --depth-mirror-top: rgba(255,255,255,0.10);
-      --depth-mirror-bottom: rgba(255,255,255,0.02);
-      --depth-line: rgba(1, 105, 111, 0.10);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.5rem;
+      --color-bg: #12110f;
+      --color-surface: #1a1815;
+      --color-surface-2: #211f1b;
+      --color-border: rgba(240, 231, 217, 0.11);
+      --color-text: #f4ede3;
+      --color-text-muted: #beb1a1;
+      --color-text-faint: #8d8377;
+      --color-primary: #db7a37;
+      --color-primary-soft: rgba(219, 122, 55, 0.14);
+      --color-primary-strong: #f39a5a;
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
     }
 
-    [data-theme="dark"] {
-      --color-bg: #171614;
-      --color-surface: rgba(28, 27, 25, 0.84);
-      --color-surface-2: rgba(32, 31, 29, 0.9);
-      --color-surface-offset: rgba(38, 36, 34, 0.88);
-      --color-surface-dynamic: rgba(53, 52, 50, 0.92);
-      --color-divider: rgba(255, 255, 255, 0.08);
-      --color-border: rgba(255, 255, 255, 0.1);
-      --color-text: #cdccca;
-      --color-text-muted: #96948f;
-      --color-text-faint: #676560;
-      --color-text-inverse: #181715;
-      --color-primary: #6ea4ab;
-      --color-primary-hover: #8bb8be;
-      --color-primary-highlight: rgba(110, 164, 171, 0.13);
-      --color-error: #d163a7;
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18);
-      --shadow-md: 0 20px 50px rgba(0, 0, 0, 0.28);
-
-      --ember-glow-a: rgba(110, 164, 171, 0.14);
-      --ember-glow-b: rgba(196, 122, 74, 0.10);
-      --ember-sheen: rgba(255, 255, 255, 0.07);
-      --ember-primary-highlight: rgba(110, 164, 171, 0.13);
-      --ember-user-bubble: rgba(110, 164, 171, 0.11);
-      --ember-stage-shadow: 0 26px 70px rgba(0, 0, 0, 0.32);
-
-      --depth-bg-top: rgba(110, 164, 171, 0.08);
-      --depth-bg-bottom: rgba(196, 122, 74, 0.06);
-      --depth-mirror-top: rgba(255,255,255,0.08);
-      --depth-mirror-bottom: rgba(255,255,255,0.012);
-      --depth-line: rgba(110, 164, 171, 0.12);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; }
 
     body {
-      min-height: 100vh;
       font-family: var(--font-body);
       font-size: var(--text-base);
+      line-height: 1.6;
       color: var(--color-text);
       background:
-        radial-gradient(circle at top center, var(--depth-bg-top), transparent 34%),
-        radial-gradient(circle at bottom left, var(--depth-bg-bottom), transparent 28%),
-        var(--color-bg);
-      overflow: hidden;
-      transition: background 600ms ease, color 220ms ease;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 8%, var(--ember-sheen), transparent 34%),
-        radial-gradient(circle at 20% 100%, rgba(255,255,255,0.02), transparent 28%);
-      opacity: 1;
-      transition: opacity 500ms ease, background 600ms ease;
-    }
-
-    button, textarea {
-      font: inherit;
+        radial-gradient(circle at top center, rgba(219, 122, 55, 0.14), transparent 34%),
+        radial-gradient(circle at 20% 20%, rgba(243, 154, 90, 0.08), transparent 22%),
+        linear-gradient(180deg, #141210 0%, #0f0e0c 100%);
     }
 
     .app-shell {
       min-height: 100vh;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: clamp(16px, 2vw, 28px);
-      gap: var(--space-6);
+      grid-template-columns: 320px 1fr;
     }
 
-    .topbar {
+    .sidebar {
+      border-right: 1px solid var(--color-border);
+      background: rgba(18, 17, 15, 0.8);
+      backdrop-filter: blur(16px);
+      padding: var(--space-8);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-4);
+      flex-direction: column;
+      gap: var(--space-8);
     }
 
     .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      position: relative;
-      border: 1px solid var(--color-border);
-      background:
-        radial-gradient(circle at 50% 45%, rgba(255,255,255,0.34), transparent 32%),
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-      backdrop-filter: blur(10px);
-    }
-
-    .mark::after {
-      content: "";
-      position: absolute;
-      inset: 7px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.16);
-    }
-
-    .brand-text {
       display: flex;
-      flex-direction: column;
-      line-height: 1.05;
+      align-items: center;
+      gap: var(--space-3);
     }
 
-    .brand-text strong {
-      font-size: var(--text-sm);
-      font-weight: 600;
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #ffd2a7 0%, var(--color-primary-strong) 38%, #7d2f06 100%);
+      box-shadow: 0 0 24px rgba(219, 122, 55, 0.45);
+    }
+
+    .brand-word {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
       letter-spacing: 0.02em;
     }
 
-    .brand-text span {
-      font-size: var(--text-xs);
+    .sidebar-copy {
       color: var(--color-text-muted);
-      letter-spacing: 0.04em;
+      font-size: var(--text-sm);
+      max-width: 28ch;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .panel h2 {
+      margin: 0 0 var(--space-2);
+      font-size: var(--text-sm);
       text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--color-text-faint);
+      font-weight: 600;
     }
 
-    .topbar-actions {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .reset-button,
-    .theme-toggle {
-      min-height: 44px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--color-border);
-      background: rgba(255,255,255,0.03);
-      color: var(--color-text);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(12px);
-      transition: background 180ms ease, color 180ms ease, border-color 180ms ease, opacity 180ms ease, transform 180ms ease;
-    }
-
-    .reset-button {
-      padding: 0 16px;
+    .panel p {
+      margin: 0;
       color: var(--color-text-muted);
-      letter-spacing: 0.01em;
+      font-size: var(--text-sm);
     }
 
-    .reset-button:hover {
-      color: var(--color-text);
-      background: rgba(255,255,255,0.06);
-      transform: translateY(-1px);
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
     }
 
-    .theme-toggle {
-      min-width: 44px;
-      padding: 0 12px;
-    }
-
-    .theme-toggle:hover {
-      background: var(--ember-primary-highlight);
-      border-color: rgba(110, 164, 171, 0.28);
-      transform: translateY(-1px);
-    }
-
-    .main-stage {
-      min-height: 0;
-      display: grid;
-      place-items: center;
-    }
-
-    .mirror {
-      width: min(100%, 980px);
-      height: min(78vh, 860px);
-      border-radius: 36px;
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, var(--depth-mirror-top), var(--depth-mirror-bottom)),
-        var(--color-surface);
+    .btn {
       border: 1px solid var(--color-border);
-      box-shadow: var(--ember-stage-shadow);
-      backdrop-filter: blur(24px);
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      transition:
-        background 650ms ease,
-        border-color 360ms ease,
-        box-shadow 650ms ease,
-        transform 400ms ease;
+      color: var(--color-text);
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius-lg);
+      padding: 0.92rem 1rem;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
     }
 
-    .mirror::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(120deg, rgba(255,255,255,0.08), transparent 26%, transparent 72%, rgba(255,255,255,0.05)),
-        radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 38%);
-      pointer-events: none;
-      transition: opacity 500ms ease, background 650ms ease;
+    .btn:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(243, 154, 90, 0.26);
+      transform: translateY(-1px);
     }
 
-    .mirror::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% -10%, var(--ember-glow-a), transparent 34%),
-        radial-gradient(circle at 15% 120%, var(--ember-glow-b), transparent 30%);
-      opacity: 0.95;
-      transition: background 700ms ease, opacity 500ms ease;
+    .btn.primary {
+      background: linear-gradient(180deg, rgba(243, 154, 90, 0.18), rgba(219, 122, 55, 0.1));
+      border-color: rgba(243, 154, 90, 0.26);
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     .hero {
-      position: relative;
-      z-index: 1;
-      padding: clamp(24px, 4vw, 44px) clamp(22px, 4vw, 44px) 0;
+      padding: var(--space-10) var(--space-10) var(--space-6);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
 
     .eyebrow {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
       font-size: var(--text-xs);
-      color: var(--color-text-muted);
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
+      color: var(--color-text-faint);
       margin-bottom: var(--space-4);
     }
 
     .hero h1 {
       font-family: var(--font-display);
-      font-size: var(--text-2xl);
-      font-weight: 400;
-      line-height: 0.94;
+      font-size: clamp(2.6rem, 1.3rem + 3vw, 4.5rem);
+      line-height: 1.02;
       letter-spacing: -0.03em;
-      max-width: 10ch;
-      margin-bottom: var(--space-4);
+      margin: 0 0 var(--space-4);
+      max-width: 11ch;
     }
 
     .hero p {
-      max-width: 52ch;
+      margin: 0;
+      max-width: 54ch;
       color: var(--color-text-muted);
-      font-size: var(--text-base);
     }
 
-    .stream {
-      position: relative;
-      z-index: 1;
-      min-height: 0;
-      overflow-y: auto;
-      padding: var(--space-8) clamp(18px, 4vw, 40px) var(--space-8);
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.14) transparent;
-    }
-
-    .stream-inner {
-      width: min(100%, 760px);
-      margin: 0 auto;
+    .chat-wrap {
+      flex: 1;
       display: flex;
       flex-direction: column;
+      padding: var(--space-8) var(--space-10) var(--space-10);
       gap: var(--space-6);
+    }
+
+    .conversation {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      max-width: 860px;
     }
 
     .message {
       display: grid;
-      gap: 10px;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: riseIn 440ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      grid-template-columns: 56px 1fr;
+      gap: var(--space-4);
+      align-items: start;
     }
 
-    .message-role {
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      display: grid;
+      place-items: center;
       font-size: var(--text-xs);
-      text-transform: uppercase;
       letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--color-text-faint);
+      background: rgba(255,255,255,0.03);
     }
 
-    .message.user .message-role {
-      text-align: right;
+    .avatar.ember {
+      background: radial-gradient(circle at 35% 35%, rgba(255, 216, 172, 0.26), rgba(219, 122, 55, 0.14) 42%, rgba(0,0,0,0.12) 100%);
+      color: var(--color-primary-strong);
+      box-shadow: 0 0 30px rgba(219, 122, 55, 0.16);
     }
 
-    .message.user .message-body {
-      margin-left: auto;
-      text-align: right;
-      background: var(--ember-user-bubble);
-      border-color: var(--depth-line);
-    }
-
-    .message.ember .message-body {
-      margin-right: auto;
-    }
-
-    .message-body {
-      width: fit-content;
-      max-width: min(100%, 62ch);
-      white-space: pre-wrap;
-      line-height: 1.72;
-      color: var(--color-text);
+    .card {
       background: rgba(255,255,255,0.025);
       border: 1px solid var(--color-border);
-      border-radius: 22px;
-      padding: 18px 20px;
-      backdrop-filter: blur(10px);
-      transition: background 400ms ease, border-color 400ms ease, color 220ms ease;
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-5) var(--space-4);
     }
 
-    .message.is-thinking .message-body {
-      color: var(--color-text-muted);
-      font-style: italic;
+    .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
     }
 
-    .message.error .message-body {
-      color: var(--color-error);
-      border-color: rgba(209, 99, 167, 0.3);
-      background: rgba(209, 99, 167, 0.08);
+    .name {
+      font-size: var(--text-sm);
+      font-weight: 600;
     }
 
-    .composer-wrap {
-      position: relative;
-      z-index: 1;
-      padding: 0 clamp(18px, 4vw, 40px) clamp(18px, 3vw, 30px);
+    .role-note {
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .message p {
+      margin: 0;
+      color: var(--color-text);
+      max-width: 66ch;
+    }
+
+    .message.user .card {
+      background: rgba(255,255,255,0.015);
     }
 
     .composer {
-      width: min(100%, 760px);
-      margin: 0 auto;
-      border-radius: 28px;
-      border: 1px solid var(--color-border);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
-        var(--color-surface-2);
-      box-shadow: var(--shadow-sm);
-      padding: 14px 14px 14px 18px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: end;
+      max-width: 860px;
+      background: rgba(20, 18, 16, 0.88);
+      border: 1px solid rgba(243, 154, 90, 0.14);
+      border-radius: calc(var(--radius-xl) + 6px);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      bottom: var(--space-6);
       backdrop-filter: blur(18px);
-      transition: border-color 360ms ease, background 500ms ease, box-shadow 500ms ease;
     }
 
-    .composer-field {
-      display: grid;
-      gap: 8px;
-    }
-
-    .composer-label {
+    .composer label {
+      display: block;
       font-size: var(--text-xs);
-      text-transform: uppercase;
       letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--color-text-faint);
+      margin-bottom: var(--space-3);
     }
 
     textarea {
       width: 100%;
-      min-height: 56px;
-      max-height: 180px;
-      resize: none;
+      min-height: 120px;
+      resize: vertical;
       border: none;
       outline: none;
       background: transparent;
       color: var(--color-text);
+      font-family: var(--font-body);
       font-size: var(--text-base);
-      line-height: 1.55;
+      line-height: 1.7;
     }
 
     textarea::placeholder {
-      color: var(--color-text-muted);
+      color: #857a6e;
     }
 
-    .send-button {
-      min-width: 56px;
-      min-height: 56px;
-      border-radius: 50%;
-      border: 1px solid rgba(110, 164, 171, 0.24);
-      background: var(--color-primary);
-      color: var(--color-text-inverse);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      align-self: center;
-      box-shadow: 0 10px 24px rgba(1, 105, 111, 0.22);
-      transition: background 180ms ease, opacity 180ms ease, box-shadow 240ms ease, transform 180ms ease;
-    }
-
-    .send-button:hover {
-      background: var(--color-primary-hover);
-      transform: translateY(-1px);
-    }
-
-    .send-button:disabled,
-    .reset-button:disabled,
-    .theme-toggle:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .footer-note {
+    .composer-row {
       display: flex;
-      justify-content: center;
-      padding-bottom: 8px;
-      color: var(--color-text-faint);
-      font-size: var(--text-xs);
-      letter-spacing: 0.04em;
-    }
-
-    .empty-state {
-      min-height: 100%;
-      display: grid;
-      align-content: center;
+      align-items: center;
+      justify-content: space-between;
       gap: var(--space-4);
-      padding: var(--space-12) 0;
+      margin-top: var(--space-4);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: var(--space-4);
     }
 
-    .empty-state h2 {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: 400;
-      letter-spacing: -0.03em;
+    .composer-hint {
+      color: var(--color-text-faint);
+      font-size: var(--text-sm);
+      max-width: 36ch;
     }
 
-    .empty-state p {
+    .send {
+      border: none;
+      background: linear-gradient(180deg, var(--color-primary-strong), var(--color-primary));
+      color: #24160d;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.9rem 1.3rem;
+      cursor: pointer;
+      font-size: var(--text-sm);
+      min-width: 132px;
+    }
+
+    .rubric {
+      margin-top: var(--space-4);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .rubric-item {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .rubric-item strong {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: var(--text-sm);
+    }
+
+    .rubric-item span {
       color: var(--color-text-muted);
-      max-width: 42ch;
+      font-size: var(--text-sm);
     }
 
-    .mirror[data-depth="1"] {
-      --depth-bg-top: rgba(110, 164, 171, 0.10);
-      --depth-bg-bottom: rgba(196, 122, 74, 0.07);
-      --ember-glow-a: rgba(110, 164, 171, 0.18);
-      --ember-glow-b: rgba(196, 122, 74, 0.12);
-      --depth-mirror-top: rgba(255,255,255,0.09);
-      --depth-line: rgba(110, 164, 171, 0.16);
-      --ember-user-bubble: rgba(110, 164, 171, 0.14);
-    }
-
-    .mirror[data-depth="2"] {
-      --depth-bg-top: rgba(130, 120, 194, 0.10);
-      --depth-bg-bottom: rgba(196, 122, 74, 0.08);
-      --ember-glow-a: rgba(126, 123, 201, 0.17);
-      --ember-glow-b: rgba(205, 126, 79, 0.13);
-      --depth-mirror-top: rgba(255,255,255,0.10);
-      --depth-line: rgba(137, 129, 204, 0.17);
-      --ember-user-bubble: rgba(126, 123, 201, 0.12);
-    }
-
-    .mirror[data-depth="3"] {
-      --depth-bg-top: rgba(172, 115, 173, 0.11);
-      --depth-bg-bottom: rgba(219, 138, 87, 0.10);
-      --ember-glow-a: rgba(174, 116, 175, 0.18);
-      --ember-glow-b: rgba(219, 138, 87, 0.15);
-      --depth-mirror-top: rgba(255,255,255,0.11);
-      --depth-line: rgba(186, 129, 186, 0.20);
-      --ember-user-bubble: rgba(174, 116, 175, 0.12);
-    }
-
-    .mirror[data-depth="4"] {
-      --depth-bg-top: rgba(214, 132, 104, 0.13);
-      --depth-bg-bottom: rgba(238, 170, 97, 0.11);
-      --ember-glow-a: rgba(216, 134, 106, 0.20);
-      --ember-glow-b: rgba(235, 172, 100, 0.16);
-      --depth-mirror-top: rgba(255,255,255,0.12);
-      --depth-line: rgba(220, 146, 106, 0.22);
-      --ember-user-bubble: rgba(214, 132, 104, 0.13);
-    }
-
-    @keyframes riseIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
+    @media (max-width: 1024px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .hero, .chat-wrap {
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
       }
     }
 
-    @media (max-width: 720px) {
-      body {
-        overflow: auto;
-      }
-
-      .app-shell {
-        min-height: 100dvh;
-        padding: 12px;
-        gap: 12px;
-      }
-
-      .mirror {
-        width: 100%;
-        height: calc(100dvh - 24px);
-        border-radius: 28px;
-      }
-
-      .hero h1 {
-        max-width: 12ch;
-      }
-
-      .message-body {
-        max-width: 100%;
-      }
-
-      .composer {
-        grid-template-columns: 1fr;
-      }
-
-      .send-button {
-        justify-self: end;
-      }
-
-      .topbar-actions {
-        gap: 8px;
-      }
-
-      .reset-button {
-        padding: 0 12px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
+    @media (max-width: 680px) {
+      .hero h1 { max-width: 100%; }
+      .message { grid-template-columns: 1fr; }
+      .avatar { display: none; }
+      .rubric { grid-template-columns: 1fr; }
+      .composer-row { flex-direction: column; align-items: flex-start; }
+      .send { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
-    <header class="topbar">
-      <div class="brand" aria-label="Ember">
-        <div class="mark" aria-hidden="true"></div>
-        <div class="brand-text">
-          <strong>Ember</strong>
-          <span>Reflective intelligence</span>
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div class="brand-word">Ember</div>
         </div>
+        <p class="sidebar-copy">
+          A reflective space for turning thought into clearer language, and clearer language into more meaningful human connection.
+        </p>
       </div>
 
-      <div class="topbar-actions">
-        <button class="reset-button" type="button" id="reset-button" aria-label="Reset conversation">
-          New thread
-        </button>
-
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
+      <div class="panel">
+        <h2>What Ember is</h2>
+        <p>
+          Not a feed, not a forum, not a therapist. Ember is a calm bridge between what you feel, what you can name, and what you may be ready to bring into your life.
+        </p>
       </div>
-    </header>
 
-    <main class="main-stage">
-      <section class="mirror" id="mirror" data-depth="0" aria-label="Conversation with Ember">
-        <div class="hero">
-          <span class="eyebrow">Version 10</span>
-          <h1>A surface for clear thought.</h1>
-          <p>
-            Ember is designed to meet you calmly, follow your context, and reflect ideas back with precision.
-          </p>
-        </div>
+      <div class="actions">
+        <button class="btn primary">Begin a new thread</button>
+        <button class="btn">Clear remembered context</button>
+      </div>
 
-        <div class="stream" id="stream">
-          <div class="stream-inner" id="stream-inner">
-            <div class="empty-state" id="empty-state">
-              <h2>Begin where you are.</h2>
-              <p>
-                Ask plainly. Think aloud. Bring a decision, a fear, an idea, or a half-formed question.
-              </p>
-            </div>
+      <div class="panel">
+        <h2>Ease of use rubric</h2>
+        <div class="rubric">
+          <div class="rubric-item">
+            <strong>Clarity</strong>
+            <span>Users know what Ember is, how to begin, and how to reset.</span>
+          </div>
+          <div class="rubric-item">
+            <strong>Calmness</strong>
+            <span>The interface lowers pressure instead of feeling busy or transactional.</span>
+          </div>
+          <div class="rubric-item">
+            <strong>Distinctiveness</strong>
+            <span>It feels unlike a default chatbot shell or support widget.</span>
+          </div>
+          <div class="rubric-item">
+            <strong>Control</strong>
+            <span>Memory and thread boundaries are visible and understandable.</span>
+          </div>
+          <div class="rubric-item">
+            <strong>Warmth</strong>
+            <span>The design feels human-centered without becoming saccharine.</span>
+          </div>
+          <div class="rubric-item">
+            <strong>Flow</strong>
+            <span>Writing, reading, and reflecting all feel effortless.</span>
           </div>
         </div>
+      </div>
+    </aside>
 
-        <div class="composer-wrap">
-          <form class="composer" id="chat-form">
-            <div class="composer-field">
-              <label class="composer-label" for="chat-input">Speak to Ember</label>
-              <textarea id="chat-input" placeholder="What are we exploring today?" rows="1"></textarea>
+    <main class="main">
+      <section class="hero">
+        <div class="eyebrow">
+          <span class="brand-mark" style="width:10px;height:10px;"></span>
+          Reflective space
+        </div>
+        <h1>Become more real, then more reachable.</h1>
+        <p>
+          Ember should feel like entering a room, not opening a chatbot. The interface slows the pace, softens the pressure, and leaves enough space for thought to become language before it becomes movement.
+        </p>
+      </section>
+
+      <section class="chat-wrap">
+        <div class="conversation">
+          <article class="message ember">
+            <div class="avatar ember">Em</div>
+            <div class="card">
+              <div class="meta">
+                <div class="name">Ember</div>
+                <div class="role-note">Bridge, not destination</div>
+              </div>
+              <p>
+                What feels most alive for you right now doesn't have to arrive perfectly formed. Start where it is. Ember's job is to help you get closer to what is true, and then closer to what can be lived.
+              </p>
             </div>
+          </article>
 
-            <button class="send-button" id="send-button" type="submit" aria-label="Send message">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <path d="M5 12h14"></path>
-                <path d="M13 5l7 7-7 7"></path>
-              </svg>
-            </button>
-          </form>
+          <article class="message user">
+            <div class="avatar">You</div>
+            <div class="card">
+              <div class="meta">
+                <div class="name">You</div>
+                <div class="role-note">Entry</div>
+              </div>
+              <p>
+                I want to connect with people who feel what I feel, but I don't want it to become another social media performance.
+              </p>
+            </div>
+          </article>
+
+          <article class="message ember">
+            <div class="avatar ember">Em</div>
+            <div class="card">
+              <div class="meta">
+                <div class="name">Ember</div>
+                <div class="role-note">Disciplined wonder</div>
+              </div>
+              <p>
+                That tension deserves respect. You want resonance, not audience. The shape of what you're reaching for is probably smaller, slower, and more honest than a platform. The next real move may not be finding everyone. It may be naming this clearly enough that one person in your life can meet you there.
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <div class="composer">
+          <label for="entry">What feels alive right now</label>
+          <textarea id="entry" placeholder="You don’t need the perfect words. Start with what feels true, unfinished, heavy, hopeful, or hard to name."></textarea>
+          <div class="composer-row">
+            <div class="composer-hint">
+              Ease of use at 5/5 means the interface feels calm, obvious, and unlike a generic AI chat shell. It should invite honesty without demanding performance.
+            </div>
+            <button class="send">Offer this to Ember</button>
+          </div>
         </div>
       </section>
     </main>
-
-    <div class="footer-note">Calm, clear, adaptive.</div>
   </div>
-
-  <script>
-    const form = document.getElementById("chat-form");
-    const input = document.getElementById("chat-input");
-    const stream = document.getElementById("stream");
-    const streamInner = document.getElementById("stream-inner");
-    const button = document.getElementById("send-button");
-    const themeToggle = document.querySelector("[data-theme-toggle]");
-    const resetButton = document.getElementById("reset-button");
-    const root = document.documentElement;
-    const mirror = document.getElementById("mirror");
-
-    let currentTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    root.setAttribute("data-theme", currentTheme);
-
-    function updateThemeIcon() {
-      themeToggle.innerHTML = currentTheme === "dark"
-        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M4.93 4.93l2.12 2.12"></path><path d="M16.95 16.95l2.12 2.12"></path><path d="M2 12h3"></path><path d="M19 12h3"></path><path d="M4.93 19.07l2.12-2.12"></path><path d="M16.95 7.05l2.12-2.12"></path></svg>'
-        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-    }
-
-    function autoResize() {
-      input.style.height = "0px";
-      input.style.height = Math.min(input.scrollHeight, 180) + "px";
-    }
-
-    function scrollToBottom() {
-      requestAnimationFrame(() => {
-        stream.scrollTop = stream.scrollHeight;
-      });
-    }
-
-    function removeEmptyState() {
-      const currentEmpty = document.getElementById("empty-state");
-      if (currentEmpty) {
-        currentEmpty.remove();
-      }
-    }
-
-    function restoreEmptyState() {
-      if (document.getElementById("empty-state")) return;
-
-      const state = document.createElement("div");
-      state.className = "empty-state";
-      state.id = "empty-state";
-      state.innerHTML = `
-        <h2>Begin where you are.</h2>
-        <p>
-          Ask plainly. Think aloud. Bring a decision, a fear, an idea, or a half-formed question.
-        </p>
-      `;
-
-      streamInner.appendChild(state);
-    }
-
-    function getConversationDepth() {
-      const totalMessages = streamInner.querySelectorAll(".message").length;
-      if (totalMessages >= 12) return 4;
-      if (totalMessages >= 8) return 3;
-      if (totalMessages >= 5) return 2;
-      if (totalMessages >= 2) return 1;
-      return 0;
-    }
-
-    function applyConversationDepth() {
-      const depth = getConversationDepth();
-      mirror.setAttribute("data-depth", String(depth));
-    }
-
-    function addMessage(role, text, options = {}) {
-      removeEmptyState();
-
-      const wrap = document.createElement("article");
-      wrap.className = `message ${role}${options.thinking ? " is-thinking" : ""}${options.error ? " error" : ""}`;
-
-      const roleLabel = document.createElement("div");
-      roleLabel.className = "message-role";
-      roleLabel.textContent = role === "user" ? "You" : "Ember";
-
-      const body = document.createElement("div");
-      body.className = "message-body";
-      body.textContent = text;
-
-      wrap.appendChild(roleLabel);
-      wrap.appendChild(body);
-      streamInner.appendChild(wrap);
-
-      applyConversationDepth();
-      scrollToBottom();
-
-      return wrap;
-    }
-
-    async function sendMessage(message) {
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Request failed");
-      }
-
-      return data.reply;
-    }
-
-    async function resetConversation() {
-      const response = await fetch("/reset", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Could not reset conversation.");
-      }
-
-      streamInner.innerHTML = "";
-      restoreEmptyState();
-      input.value = "";
-      input.style.height = "56px";
-      mirror.setAttribute("data-depth", "0");
-      input.focus();
-    }
-
-    updateThemeIcon();
-    applyConversationDepth();
-    autoResize();
-
-    themeToggle.addEventListener("click", () => {
-      currentTheme = currentTheme === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", currentTheme);
-      updateThemeIcon();
-    });
-
-    input.addEventListener("input", autoResize);
-
-    resetButton.addEventListener("click", async () => {
-      resetButton.disabled = true;
-
-      try {
-        await resetConversation();
-      } catch (error) {
-        addMessage("ember", "I couldn't reset the thread just now.", { error: true });
-      } finally {
-        resetButton.disabled = false;
-      }
-    });
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const message = input.value.trim();
-      if (!message) return;
-
-      addMessage("user", message);
-
-      input.value = "";
-      input.style.height = "56px";
-      button.disabled = true;
-
-      const thinkingNode = addMessage("ember", "Listening, considering, forming a response...", { thinking: true });
-
-      try {
-        const reply = await sendMessage(message);
-        thinkingNode.querySelector(".message-body").textContent = reply;
-        thinkingNode.classList.remove("is-thinking");
-      } catch (err) {
-        thinkingNode.querySelector(".message-body").textContent = "Something interrupted the connection to Ember.";
-        thinkingNode.classList.remove("is-thinking");
-        thinkingNode.classList.add("error");
-      } finally {
-        button.disabled = false;
-        input.focus();
-        applyConversationDepth();
-        scrollToBottom();
-      }
-    });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        form.requestSubmit();
-      }
-    });
-  </script>
 </body>
 </html>
