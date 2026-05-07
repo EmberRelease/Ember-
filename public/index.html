@@ -10,11 +10,11 @@
   <style>
     :root {
       --text-xs: clamp(0.75rem, 0.72rem + 0.18vw, 0.875rem);
-      --text-sm: clamp(0.875rem, 0.82rem + 0.25vw, 1rem);
+      --text-sm: clamp(0.875rem, 0.82rem + 0.24vw, 1rem);
       --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
-      --text-lg: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-      --text-xl: clamp(1.45rem, 1.1rem + 1vw, 2.2rem);
-      --text-2xl: clamp(2rem, 1.3rem + 2vw, 3.5rem);
+      --text-lg: clamp(1.125rem, 1.02rem + 0.45vw, 1.4rem);
+      --text-xl: clamp(1.4rem, 1.05rem + 0.95vw, 2.1rem);
+      --text-2xl: clamp(2.1rem, 1.2rem + 2.2vw, 4rem);
 
       --space-1: 0.25rem;
       --space-2: 0.5rem;
@@ -29,24 +29,25 @@
 
       --radius-sm: 0.5rem;
       --radius-md: 0.875rem;
-      --radius-lg: 1.125rem;
-      --radius-xl: 1.5rem;
+      --radius-lg: 1.15rem;
+      --radius-xl: 1.6rem;
       --radius-full: 999px;
 
       --bg: #12110f;
-      --surface: rgba(26, 23, 19, 0.88);
-      --surface-2: rgba(34, 30, 25, 0.88);
-      --surface-3: rgba(42, 37, 31, 0.92);
-      --border: rgba(241, 232, 219, 0.11);
-      --text: #f3ece1;
-      --muted: #b9ac9c;
-      --faint: #897d70;
-      --accent: #c96f33;
-      --accent-strong: #ee9a5f;
-      --accent-soft: rgba(201, 111, 51, 0.12);
-      --success: #7ea26d;
-      --danger: #cb7b71;
-      --shadow-lg: 0 22px 60px rgba(0,0,0,0.38);
+      --bg-2: #0f0e0c;
+      --surface: rgba(26, 23, 19, 0.84);
+      --surface-2: rgba(30, 27, 23, 0.9);
+      --surface-3: rgba(38, 34, 28, 0.92);
+      --border: rgba(241, 233, 221, 0.1);
+      --text: #f4ede3;
+      --muted: #b7ab9c;
+      --faint: #85796d;
+      --accent: #ca7136;
+      --accent-strong: #ef9d63;
+      --accent-soft: rgba(202, 113, 54, 0.11);
+      --success: #7da06a;
+      --danger: #c87870;
+      --shadow-lg: 0 28px 80px rgba(0,0,0,0.42);
 
       --font-display: "Instrument Serif", Georgia, serif;
       --font-body: "Inter", system-ui, sans-serif;
@@ -61,52 +62,47 @@
 
     body {
       min-height: 100vh;
-      color: var(--text);
       font-family: var(--font-body);
       font-size: var(--text-base);
       line-height: 1.6;
+      color: var(--text);
       background:
-        radial-gradient(circle at top center, rgba(201, 111, 51, 0.15), transparent 30%),
-        radial-gradient(circle at 12% 18%, rgba(238, 154, 95, 0.07), transparent 20%),
-        linear-gradient(180deg, #141210 0%, #0e0d0b 100%);
+        radial-gradient(circle at top center, rgba(202, 113, 54, 0.14), transparent 32%),
+        radial-gradient(circle at 10% 15%, rgba(239, 157, 99, 0.06), transparent 18%),
+        linear-gradient(180deg, #141210 0%, #0d0c0a 100%);
     }
 
     button, textarea {
       font: inherit;
     }
 
-    .app {
+    .shell {
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 280px minmax(0, 1fr) 320px;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-6);
     }
 
-    .rail,
-    .bridge-rail {
-      background: rgba(18, 17, 15, 0.82);
-      backdrop-filter: blur(16px);
-      border-right: 1px solid var(--border);
-      padding: var(--space-8);
-    }
-
-    .bridge-rail {
-      border-right: none;
-      border-left: 1px solid var(--border);
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: var(--space-3);
-      margin-bottom: var(--space-8);
     }
 
     .brand-mark {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffd4ad 0%, var(--accent-strong) 38%, #7a2d07 100%);
-      box-shadow: 0 0 24px rgba(201, 111, 51, 0.42);
+      background: radial-gradient(circle at 35% 35%, #ffd4ad 0%, var(--accent-strong) 38%, #7d2f07 100%);
+      box-shadow: 0 0 26px rgba(202, 113, 54, 0.38);
       flex: 0 0 auto;
     }
 
@@ -116,119 +112,30 @@
       letter-spacing: 0.02em;
     }
 
-    .brand-copy,
-    .rail p,
-    .bridge-rail p {
-      color: var(--muted);
-      font-size: var(--text-sm);
-      margin: 0;
-    }
-
-    .stack {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-5);
-    }
-
-    .panel {
-      background: rgba(255,255,255,0.025);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-5);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .panel h2,
-    .panel h3 {
-      margin: 0 0 var(--space-2);
-      font-size: var(--text-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--faint);
-      font-weight: 600;
-    }
-
-    .mode-grid,
-    .action-list,
-    .memory-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-
-    .mode-btn,
-    .action-btn,
-    .quiet-btn {
-      width: 100%;
-      text-align: left;
+    .utility-toggle {
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.03);
-      color: var(--text);
-      border-radius: var(--radius-lg);
-      padding: 0.9rem 1rem;
+      color: var(--muted);
+      border-radius: var(--radius-full);
+      padding: 0.7rem 1rem;
+      min-height: 42px;
       cursor: pointer;
-      min-height: 46px;
       transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
     }
 
-    .mode-btn:hover,
-    .action-btn:hover,
-    .quiet-btn:hover,
-    .mode-btn:focus-visible,
-    .action-btn:focus-visible,
-    .quiet-btn:focus-visible {
+    .utility-toggle:hover,
+    .utility-toggle:focus-visible {
       background: rgba(255,255,255,0.06);
-      border-color: rgba(238, 154, 95, 0.28);
+      border-color: rgba(239, 157, 99, 0.28);
       transform: translateY(-1px);
       outline: none;
     }
 
-    .mode-btn.active {
-      background: var(--accent-soft);
-      border-color: rgba(238, 154, 95, 0.35);
-    }
-
-    .mode-label {
-      display: block;
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.2rem;
-    }
-
-    .mode-sub {
-      display: block;
-      font-size: var(--text-xs);
-      color: var(--muted);
-    }
-
-    .main {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      padding: var(--space-8);
-      gap: var(--space-6);
-    }
-
     .hero {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: var(--space-6);
-      align-items: stretch;
-    }
-
-    .hero-card,
-    .status-card,
-    .mirror-card,
-    .path-card {
-      background: rgba(255,255,255,0.025);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .hero-card {
-      padding: var(--space-8);
+      width: min(980px, 100%);
+      margin: 0 auto;
+      text-align: center;
+      margin-bottom: var(--space-8);
     }
 
     .eyebrow {
@@ -248,29 +155,35 @@
       font-size: var(--text-2xl);
       line-height: 0.98;
       letter-spacing: -0.03em;
-      max-width: 11ch;
     }
 
     .hero p {
-      margin: 0;
-      max-width: 60ch;
+      margin: 0 auto;
+      max-width: 56ch;
       color: var(--muted);
     }
 
-    .status-card {
-      padding: var(--space-6);
+    .stage {
+      width: min(920px, 100%);
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       gap: var(--space-5);
     }
 
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
     .status-pill {
-      width: fit-content;
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
-      padding: 0.45rem 0.75rem;
+      padding: 0.48rem 0.75rem;
       border-radius: var(--radius-full);
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.025);
@@ -283,98 +196,80 @@
       height: 8px;
       border-radius: 50%;
       background: var(--success);
-      box-shadow: 0 0 0 6px rgba(126, 162, 109, 0.08);
+      box-shadow: 0 0 0 6px rgba(125, 160, 106, 0.08);
     }
 
-    .status-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-3);
-    }
-
-    .status-block {
+    .canvas {
+      background:
+        radial-gradient(circle at top center, rgba(239,157,99,0.05), transparent 46%),
+        rgba(24, 21, 18, 0.82);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4);
-      background: rgba(255,255,255,0.02);
+      border-radius: 28px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
     }
 
-    .status-block span {
-      display: block;
-      font-size: var(--text-xs);
-      color: var(--faint);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.35rem;
-    }
-
-    .status-block strong {
-      font-size: var(--text-sm);
-      color: var(--text);
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: var(--space-6);
-      min-height: 0;
-    }
-
-    .mirror-card {
-      padding: var(--space-6);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-5);
-    }
-
-    .section-head {
+    .canvas-head {
+      padding: var(--space-6) var(--space-6) var(--space-4);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: var(--space-4);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .section-head h2 {
-      margin: 0;
+    .canvas-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .canvas-title strong {
+      font-size: var(--text-lg);
       font-family: var(--font-display);
-      font-size: var(--text-xl);
       font-weight: 400;
+      letter-spacing: 0.01em;
     }
 
-    .section-note {
+    .canvas-title span {
       color: var(--faint);
       font-size: var(--text-sm);
     }
 
-    .flash {
-      display: none;
-      border-radius: var(--radius-lg);
+    .mode-pill {
       border: 1px solid var(--border);
-      padding: 0.9rem 1rem;
+      background: var(--accent-soft);
+      color: var(--text);
+      border-radius: var(--radius-full);
+      padding: 0.58rem 0.9rem;
       font-size: var(--text-sm);
-      white-space: pre-wrap;
+      cursor: pointer;
+      transition: background 180ms ease, border-color 180ms ease;
     }
 
-    .flash.show { display: block; }
-    .flash.info { background: rgba(255,255,255,0.03); color: var(--muted); }
-    .flash.success { background: rgba(126, 162, 109, 0.12); color: #d7e8cf; border-color: rgba(126, 162, 109, 0.22); }
-    .flash.error { background: rgba(203, 123, 113, 0.12); color: #f0d4d0; border-color: rgba(203, 123, 113, 0.22); }
-
-    .mirror-surface {
-      border: 1px solid rgba(238, 154, 95, 0.18);
-      border-radius: calc(var(--radius-xl) + 4px);
-      background:
-        radial-gradient(circle at top center, rgba(238,154,95,0.06), transparent 48%),
-        rgba(20, 18, 16, 0.94);
-      padding: var(--space-5);
+    .mode-pill:hover,
+    .mode-pill:focus-visible {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(239, 157, 99, 0.28);
+      outline: none;
     }
 
-    .mirror-label {
+    .canvas-body {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .entry-zone {
+      padding: var(--space-6);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .entry-label {
       display: block;
       font-size: var(--text-xs);
+      color: var(--faint);
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--faint);
       margin-bottom: var(--space-3);
     }
 
@@ -386,174 +281,179 @@
       resize: vertical;
       background: transparent;
       color: var(--text);
-      font-size: var(--text-base);
-      line-height: 1.75;
+      font-size: var(--text-lg);
+      line-height: 1.7;
     }
 
     textarea::placeholder {
-      color: #84786b;
+      color: #877a6e;
     }
 
-    .mirror-tools {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
-      margin-top: var(--space-4);
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
-      border-radius: var(--radius-full);
-      padding: 0.55rem 0.8rem;
-      cursor: pointer;
-      font-size: var(--text-xs);
-      letter-spacing: 0.03em;
-      transition: background 180ms ease, border-color 180ms ease;
-    }
-
-    .chip:hover,
-    .chip:focus-visible {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(238, 154, 95, 0.28);
-      outline: none;
-    }
-
-    .composer-row {
+    .subtle-tools {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: var(--space-4);
       flex-wrap: wrap;
+      margin-top: var(--space-4);
     }
 
-    .composer-hint {
-      color: var(--faint);
-      font-size: var(--text-sm);
-      max-width: 42ch;
+    .starter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
     }
 
-    .primary-action {
+    .starter {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+      border-radius: var(--radius-full);
+      padding: 0.55rem 0.8rem;
+      cursor: pointer;
+      font-size: var(--text-xs);
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+
+    .starter:hover,
+    .starter:focus-visible {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(239, 157, 99, 0.28);
+      outline: none;
+    }
+
+    .send {
       border: none;
       background: var(--accent);
       color: #24160d;
       font-weight: 700;
       border-radius: var(--radius-full);
       padding: 0.95rem 1.35rem;
-      min-width: 170px;
+      min-width: 160px;
       min-height: 48px;
       cursor: pointer;
       transition: background 180ms ease, transform 180ms ease;
     }
 
-    .primary-action:hover,
-    .primary-action:focus-visible {
+    .send:hover,
+    .send:focus-visible {
       background: var(--accent-strong);
       transform: translateY(-1px);
       outline: none;
     }
 
-    .primary-action:disabled,
-    .mode-btn:disabled,
-    .action-btn:disabled,
-    .quiet-btn:disabled {
+    .send:disabled,
+    .utility-btn:disabled,
+    .bridge-btn:disabled,
+    .mode-option:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
     }
 
-    .path-card {
+    .response-zone {
       padding: var(--space-6);
       display: flex;
       flex-direction: column;
       gap: var(--space-5);
-      min-height: 0;
     }
 
-    .path-flow {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-      overflow: auto;
-      padding-right: var(--space-1);
-      min-height: 460px;
-      max-height: 68vh;
-    }
-
-    .path-node {
-      position: relative;
-      padding-left: var(--space-8);
-    }
-
-    .path-node::before {
-      content: "";
-      position: absolute;
-      left: 14px;
-      top: 0;
-      bottom: -20px;
-      width: 1px;
-      background: linear-gradient(180deg, rgba(238,154,95,0.34), rgba(255,255,255,0.05));
-    }
-
-    .path-node:last-child::before {
-      bottom: 28px;
-    }
-
-    .path-node::after {
-      content: "";
-      position: absolute;
-      left: 8px;
-      top: 16px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(238,154,95,0.9);
-      box-shadow: 0 0 0 6px rgba(238,154,95,0.08);
-    }
-
-    .path-node.user::after {
-      background: rgba(244, 237, 227, 0.9);
-      box-shadow: 0 0 0 6px rgba(244, 237, 227, 0.06);
-    }
-
-    .path-body {
+    .response-card {
       background: rgba(255,255,255,0.025);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: var(--space-4);
+      padding: var(--space-5);
     }
 
-    .path-meta {
+    .response-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: var(--space-3);
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-3);
     }
 
-    .path-title {
+    .response-meta strong {
       font-size: var(--text-sm);
       font-weight: 600;
     }
 
-    .path-type {
+    .response-meta span {
       font-size: var(--text-xs);
       color: var(--faint);
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
-    .path-body p {
+    .response-card p {
       margin: 0;
+      white-space: pre-wrap;
       color: var(--text);
+    }
+
+    .response-empty {
+      color: var(--muted);
+      text-align: center;
+      padding: var(--space-10) var(--space-6);
+      max-width: 48ch;
+      margin: 0 auto;
+    }
+
+    .response-empty strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--text-xl);
+      color: var(--text);
+      margin-bottom: var(--space-2);
+    }
+
+    .bridge-strip {
+      display: none;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .bridge-strip.show {
+      display: flex;
+    }
+
+    .bridge-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: var(--radius-full);
+      padding: 0.7rem 0.95rem;
+      cursor: pointer;
+      font-size: var(--text-sm);
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+
+    .bridge-btn:hover,
+    .bridge-btn:focus-visible {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(239,157,99,0.28);
+      outline: none;
+    }
+
+    .flash {
+      display: none;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      font-size: var(--text-sm);
       white-space: pre-wrap;
     }
 
+    .flash.show { display: block; }
+    .flash.info { background: rgba(255,255,255,0.03); color: var(--muted); }
+    .flash.success { background: rgba(125,160,106,0.12); color: #dcebd4; border-color: rgba(125,160,106,0.2); }
+    .flash.error { background: rgba(200,120,112,0.12); color: #f2d8d4; border-color: rgba(200,120,112,0.2); }
+
     .typing {
       display: inline-flex;
-      align-items: center;
       gap: 6px;
+      align-items: center;
     }
 
     .typing span {
@@ -572,367 +472,315 @@
       40% { opacity: 1; transform: translateY(-2px); }
     }
 
-    .bridge-rail .panel {
-      box-shadow: none;
+    .drawer {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 280ms ease, opacity 220ms ease, margin-top 220ms ease;
+      margin-top: 0;
     }
 
-    .bridge-note {
-      color: var(--muted);
-      font-size: var(--text-sm);
-      margin-bottom: var(--space-4);
+    .drawer.open {
+      max-height: 600px;
+      opacity: 1;
+      margin-top: var(--space-4);
     }
 
-    .memory-item,
-    .action-btn {
-      background: rgba(255,255,255,0.025);
+    .drawer-panel {
+      background: rgba(24, 21, 18, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-5);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    .drawer-block {
+      background: rgba(255,255,255,0.02);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 0.9rem 1rem;
+      padding: var(--space-4);
     }
 
-    .memory-item strong,
-    .action-btn strong {
-      display: block;
-      font-size: var(--text-sm);
-      margin-bottom: 0.2rem;
-      color: var(--text);
-    }
-
-    .memory-item span,
-    .action-btn span {
-      display: block;
+    .drawer-block h3 {
+      margin: 0 0 var(--space-2);
       font-size: var(--text-xs);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 600;
+    }
+
+    .drawer-block p {
+      margin: 0;
       color: var(--muted);
-      line-height: 1.5;
+      font-size: var(--text-sm);
     }
 
-    .tiny-actions {
+    .mode-options {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
+      flex-wrap: wrap;
+      gap: var(--space-2);
     }
 
-    .utility-row {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
+    .mode-option,
+    .utility-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: var(--radius-full);
+      padding: 0.65rem 0.85rem;
+      cursor: pointer;
+      font-size: var(--text-sm);
+      transition: background 180ms ease, border-color 180ms ease;
     }
 
-    @media (max-width: 1280px) {
-      .app {
-        grid-template-columns: 250px minmax(0, 1fr);
-      }
-
-      .bridge-rail {
-        grid-column: 1 / -1;
-        border-left: none;
-        border-top: 1px solid var(--border);
-      }
+    .mode-option:hover,
+    .mode-option:focus-visible,
+    .utility-btn:hover,
+    .utility-btn:focus-visible {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(239,157,99,0.28);
+      outline: none;
     }
 
-    @media (max-width: 980px) {
-      .app {
+    .mode-option.active {
+      background: var(--accent-soft);
+      border-color: rgba(239,157,99,0.28);
+    }
+
+    @media (max-width: 900px) {
+      .drawer-panel {
         grid-template-columns: 1fr;
       }
 
-      .rail,
-      .bridge-rail {
-        border-right: none;
-        border-left: none;
+      .hero {
+        text-align: left;
       }
 
-      .rail {
-        border-bottom: 1px solid var(--border);
-      }
-
-      .hero,
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-
-      .main {
-        padding: var(--space-6);
+      .hero p {
+        margin-left: 0;
+        margin-right: 0;
       }
     }
 
     @media (max-width: 680px) {
-      .status-grid {
-        grid-template-columns: 1fr;
+      .shell {
+        padding: var(--space-4);
       }
 
-      .composer-row,
-      .section-head {
+      .topbar {
+        margin-bottom: var(--space-6);
+      }
+
+      .canvas-head,
+      .entry-zone,
+      .response-zone {
+        padding: var(--space-5);
+      }
+
+      .subtle-tools {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
       }
 
-      .primary-action {
+      .send {
         width: 100%;
       }
 
-      .hero h1 {
-        max-width: 100%;
+      .canvas-head {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="rail">
+  <div class="shell">
+    <header class="topbar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true"></div>
         <div class="brand-word">Ember</div>
       </div>
 
-      <p class="brand-copy">A reflective intelligence built to help people think clearly, find what is true, and carry it into life.</p>
+      <button id="drawerToggle" class="utility-toggle" type="button">Controls</button>
+    </header>
 
-      <div class="stack" style="margin-top: 2rem;">
-        <section class="panel">
-          <h2>Modes</h2>
-          <div class="mode-grid" id="modeGrid">
-            <button class="mode-btn active" type="button" data-mode="reflect">
-              <span class="mode-label">Reflect</span>
-              <span class="mode-sub">Make space and name what is here.</span>
-            </button>
-            <button class="mode-btn" type="button" data-mode="clarify">
-              <span class="mode-label">Clarify</span>
-              <span class="mode-sub">Distill confusion into a cleaner truth.</span>
-            </button>
-            <button class="mode-btn" type="button" data-mode="reframe">
-              <span class="mode-label">Reframe</span>
-              <span class="mode-sub">See the situation from a truer angle.</span>
-            </button>
-            <button class="mode-btn" type="button" data-mode="prepare">
-              <span class="mode-label">Prepare to say</span>
-              <span class="mode-sub">Shape words for another human being.</span>
-            </button>
-            <button class="mode-btn" type="button" data-mode="act">
-              <span class="mode-label">Act</span>
-              <span class="mode-sub">Turn thought into a next concrete move.</span>
-            </button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>What Ember is</h2>
-          <p>Not a feed, not a forum, not a performance space. Ember is a bridge between what you feel, what you can name, and what you may be ready to live.</p>
-        </section>
-
-        <section class="panel">
-          <h2>Thread controls</h2>
-          <div class="utility-row">
-            <button class="quiet-btn" id="newThreadBtn" type="button">Begin a new thread</button>
-            <button class="quiet-btn" id="clearMemoryBtn" type="button">Clear remembered context</button>
-          </div>
-        </section>
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="brand-mark" style="width:10px;height:10px;"></span>
+        Reflective intelligence
       </div>
-    </aside>
+      <h1>Become more real, then more reachable.</h1>
+      <p>Ember is a calm space for seeing what is true, giving it clearer language, and carrying it into life. It should feel attractive because it is precise, warm, and effortless — not because it is crowded.</p>
+    </section>
 
-    <main class="main">
-      <section class="hero">
-        <div class="hero-card">
-          <div class="eyebrow">
-            <span class="brand-mark" style="width:10px;height:10px;"></span>
-            Reflective instrument
+    <section class="stage">
+      <div class="status-row">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span id="statusText">Ready for reflection</span>
+        </div>
+        <div class="status-pill" id="modeReadout">Mode: Reflect</div>
+        <div class="status-pill" id="threadReadout">Thread: Open</div>
+      </div>
+
+      <div class="canvas">
+        <div class="canvas-head">
+          <div class="canvas-title">
+            <strong>What feels alive right now</strong>
+            <span id="modeHint">Start imperfectly. Ember can help you sharpen what comes next.</span>
           </div>
-          <h1>Become more real, then more reachable.</h1>
-          <p>Ember should feel like entering a reflective room, not opening a chatbot. The mirror helps you begin honestly, the path helps you see what is happening, and the bridge helps you carry it into life.</p>
+          <button class="mode-pill" id="quickModeBtn" type="button">Reflect</button>
         </div>
 
-        <div class="status-card">
-          <div>
-            <div class="status-pill">
-              <span class="status-dot"></span>
-              <span id="statusText">Ready for reflection</span>
-            </div>
-          </div>
+        <div class="canvas-body">
+          <section class="entry-zone">
+            <div id="flash" class="flash info" aria-live="polite"></div>
 
-          <div class="status-grid">
-            <div class="status-block">
-              <span>Current mode</span>
-              <strong id="currentModeLabel">Reflect</strong>
-            </div>
-            <div class="status-block">
-              <span>Current thread</span>
-              <strong id="threadNote">Open and active</strong>
-            </div>
-            <div class="status-block">
-              <span>Operational aim</span>
-              <strong id="operationalAim">Name what feels true.</strong>
-            </div>
-            <div class="status-block">
-              <span>Bridge state</span>
-              <strong id="bridgeState">Waiting for a first entry.</strong>
-            </div>
-          </div>
-        </div>
-      </section>
+            <label class="entry-label" for="entry">Begin with what is true, unfinished, or hard to name</label>
+            <textarea id="entry" placeholder="You do not need the perfect words. Start with what feels true, unfinished, heavy, hopeful, or difficult to admit."></textarea>
 
-      <section class="workspace">
-        <section class="mirror-card">
-          <div class="section-head">
-            <h2>Mirror</h2>
-            <div class="section-note">Start imperfectly. Precision can come after honesty.</div>
-          </div>
-
-          <div id="flash" class="flash info" aria-live="polite"></div>
-
-          <div class="mirror-surface">
-            <label class="mirror-label" for="entry">What feels alive right now</label>
-            <textarea id="entry" placeholder="You do not need the perfect words. Begin with what feels true, unfinished, heavy, hopeful, or hard to name."></textarea>
-
-            <div class="mirror-tools">
-              <button class="chip" type="button" data-insert="I think what is really bothering me is ">Start more honestly</button>
-              <button class="chip" type="button" data-insert="What I am afraid to admit is ">Name the hidden part</button>
-              <button class="chip" type="button" data-insert="If I say this plainly, it sounds like ">Say it plainly</button>
-              <button class="chip" type="button" data-insert="What I want from another person is ">Move toward connection</button>
-            </div>
-          </div>
-
-          <div class="composer-row">
-            <div class="composer-hint" id="modeHint">Reflect mode helps you slow down and recognize what is actually present before trying to solve it.</div>
-            <button class="primary-action" id="sendBtn" type="button">Offer this to Ember</button>
-          </div>
-        </section>
-
-        <section class="path-card">
-          <div class="section-head">
-            <h2>Path</h2>
-            <div class="section-note">See the movement, not just the messages.</div>
-          </div>
-
-          <div class="path-flow" id="pathFlow" aria-live="polite">
-            <div class="path-node ember">
-              <div class="path-body">
-                <div class="path-meta">
-                  <div class="path-title">Ember</div>
-                  <div class="path-type">Opening</div>
-                </div>
-                <p>Start where it is. Ember is here to help you get closer to what is true, and then closer to what can be lived.</p>
+            <div class="subtle-tools">
+              <div class="starter-row">
+                <button class="starter" type="button" data-insert="I think what is really bothering me is ">Start more honestly</button>
+                <button class="starter" type="button" data-insert="What I am afraid to admit is ">Name the hidden part</button>
+                <button class="starter" type="button" data-insert="What I want from another person is ">Move toward connection</button>
               </div>
-            </div>
-          </div>
-        </section>
-      </section>
-    </main>
 
-    <aside class="bridge-rail">
-      <div class="stack">
-        <section class="panel">
-          <h2>Bridge</h2>
-          <p class="bridge-note">Reflection should not end as reflection. Use these actions to turn thought into language, clarity, and movement.</p>
-
-          <div class="action-list">
-            <button class="action-btn" type="button" data-bridge="distill">
-              <strong>Distill the core truth</strong>
-              <span>Strip away the extra and name the real center.</span>
-            </button>
-            <button class="action-btn" type="button" data-bridge="prepare">
-              <strong>Turn this into words for someone</strong>
-              <span>Draft something you could actually say.</span>
-            </button>
-            <button class="action-btn" type="button" data-bridge="boundary">
-              <strong>Find the boundary</strong>
-              <span>Clarify what you need, refuse, or require.</span>
-            </button>
-            <button class="action-btn" type="button" data-bridge="nextstep">
-              <strong>Name the next move</strong>
-              <span>Translate reflection into one real-world step.</span>
-            </button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>Refine Ember</h2>
-          <div class="tiny-actions">
-            <button class="quiet-btn refine-btn" type="button" data-refine="Be more precise.">Be more precise</button>
-            <button class="quiet-btn refine-btn" type="button" data-refine="Be less gentle and more direct.">Be less gentle</button>
-            <button class="quiet-btn refine-btn" type="button" data-refine="Ground this in what is concrete.">Ground this</button>
-            <button class="quiet-btn refine-btn" type="button" data-refine="This missed me. Try again from a truer angle.">This missed me</button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>What Ember holds</h2>
-          <div class="memory-list" id="memoryList">
-            <div class="memory-item">
-              <strong>Current mode</strong>
-              <span id="memoryMode">Reflect</span>
+              <button class="send" id="sendBtn" type="button">Offer this to Ember</button>
             </div>
-            <div class="memory-item">
-              <strong>Conversation depth</strong>
-              <span id="memoryDepth">Just beginning.</span>
+          </section>
+
+          <section class="response-zone">
+            <div id="responseCard" class="response-card" style="display:none;">
+              <div class="response-meta">
+                <strong>Ember</strong>
+                <span id="responseType">Response</span>
+              </div>
+              <p id="responseText"></p>
             </div>
-            <div class="memory-item">
-              <strong>Latest movement</strong>
-              <span id="memoryMovement">No turn has happened yet.</span>
+
+            <div id="responseEmpty" class="response-empty">
+              <strong>Ember begins quietly.</strong>
+              There is no need to perform here. Start with what feels most true, and Ember will help you make it clearer.
             </div>
-          </div>
-        </section>
+
+            <div id="bridgeStrip" class="bridge-strip">
+              <button class="bridge-btn" type="button" data-bridge="Distill this into the core truth only.">Distill the core truth</button>
+              <button class="bridge-btn" type="button" data-bridge="Turn this into words I could actually say to another person.">Turn into words for someone</button>
+              <button class="bridge-btn" type="button" data-bridge="Help me find the boundary or need inside this.">Find the boundary</button>
+              <button class="bridge-btn" type="button" data-bridge="Turn this into one specific next move in real life.">Name the next move</button>
+            </div>
+          </section>
+        </div>
       </div>
-    </aside>
+
+      <div id="drawer" class="drawer">
+        <div class="drawer-panel">
+          <section class="drawer-block">
+            <h3>Modes</h3>
+            <div class="mode-options" id="modeOptions">
+              <button class="mode-option active" type="button" data-mode="reflect">Reflect</button>
+              <button class="mode-option" type="button" data-mode="clarify">Clarify</button>
+              <button class="mode-option" type="button" data-mode="reframe">Reframe</button>
+              <button class="mode-option" type="button" data-mode="prepare">Prepare to say</button>
+              <button class="mode-option" type="button" data-mode="act">Act</button>
+            </div>
+          </section>
+
+          <section class="drawer-block">
+            <h3>What Ember holds</h3>
+            <p id="memoryReadout">Current mode: Reflect. Conversation depth: just beginning. Latest movement: waiting for your first entry.</p>
+          </section>
+
+          <section class="drawer-block">
+            <h3>Thread controls</h3>
+            <div class="mode-options">
+              <button class="utility-btn" id="newThreadBtn" type="button">New thread</button>
+              <button class="utility-btn" id="clearMemoryBtn" type="button">Clear memory</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    const pathFlow = document.getElementById('pathFlow');
-    const entry = document.getElementById('entry');
+    const drawer = document.getElementById('drawer');
+    const drawerToggle = document.getElementById('drawerToggle');
     const sendBtn = document.getElementById('sendBtn');
     const newThreadBtn = document.getElementById('newThreadBtn');
     const clearMemoryBtn = document.getElementById('clearMemoryBtn');
+    const entry = document.getElementById('entry');
     const flash = document.getElementById('flash');
     const statusText = document.getElementById('statusText');
-    const currentModeLabel = document.getElementById('currentModeLabel');
-    const operationalAim = document.getElementById('operationalAim');
-    const bridgeState = document.getElementById('bridgeState');
-    const threadNote = document.getElementById('threadNote');
-    const memoryMode = document.getElementById('memoryMode');
-    const memoryDepth = document.getElementById('memoryDepth');
-    const memoryMovement = document.getElementById('memoryMovement');
-    const modeGrid = document.getElementById('modeGrid');
+    const modeReadout = document.getElementById('modeReadout');
+    const threadReadout = document.getElementById('threadReadout');
+    const quickModeBtn = document.getElementById('quickModeBtn');
     const modeHint = document.getElementById('modeHint');
+    const memoryReadout = document.getElementById('memoryReadout');
+    const responseCard = document.getElementById('responseCard');
+    const responseText = document.getElementById('responseText');
+    const responseEmpty = document.getElementById('responseEmpty');
+    const responseType = document.getElementById('responseType');
+    const bridgeStrip = document.getElementById('bridgeStrip');
+    const modeOptions = document.getElementById('modeOptions');
 
     let currentMode = 'reflect';
+    let currentModeIndex = 0;
     let inFlight = false;
-    let typingNode = null;
     let turnCount = 0;
 
-    const modeConfig = {
-      reflect: {
-        label: 'Reflect',
-        aim: 'Name what feels true.',
-        hint: 'Reflect mode helps you slow down and recognize what is actually present before trying to solve it.'
-      },
-      clarify: {
-        label: 'Clarify',
-        aim: 'Reduce confusion and sharpen the center.',
-        hint: 'Clarify mode is for pulling a cleaner truth out of a crowded or tangled experience.'
-      },
-      reframe: {
-        label: 'Reframe',
-        aim: 'Find the truer angle.',
-        hint: 'Reframe mode helps you look again without pretending the hard part is not real.'
-      },
-      prepare: {
-        label: 'Prepare to say',
-        aim: 'Turn inner truth into language for another person.',
-        hint: 'Prepare to say mode helps you shape honest words you could actually use with someone else.'
-      },
-      act: {
-        label: 'Act',
-        aim: 'Move toward one concrete next step.',
-        hint: 'Act mode keeps reflection from becoming a loop by asking what can actually be done next.'
-      }
-    };
+    const modes = [
+      { key: 'reflect', label: 'Reflect', hint: 'Start imperfectly. Ember can help you sharpen what comes next.' },
+      { key: 'clarify', label: 'Clarify', hint: 'Use this when you know something matters but cannot yet name it cleanly.' },
+      { key: 'reframe', label: 'Reframe', hint: 'Use this when you need a truer angle on a difficult situation.' },
+      { key: 'prepare', label: 'Prepare to say', hint: 'Use this when you need honest language for another human being.' },
+      { key: 'act', label: 'Act', hint: 'Use this when reflection needs to become one real next move.' }
+    ];
+
+    function updateModeUI(modeKey) {
+      const match = modes.findIndex(m => m.key === modeKey);
+      if (match === -1) return;
+
+      currentMode = modeKey;
+      currentModeIndex = match;
+
+      const mode = modes[match];
+      modeReadout.textContent = `Mode: ${mode.label}`;
+      quickModeBtn.textContent = mode.label;
+      modeHint.textContent = mode.hint;
+
+      document.querySelectorAll('.mode-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === modeKey);
+      });
+
+      updateMemoryReadout('Mode updated.');
+    }
+
+    function updateMemoryReadout(movement) {
+      let depth = 'just beginning';
+      if (turnCount >= 1 && turnCount <= 2) depth = 'early reflection';
+      if (turnCount >= 3 && turnCount <= 5) depth = 'developing clarity';
+      if (turnCount >= 6) depth = 'deep active thread';
+
+      const label = modes[currentModeIndex].label;
+      memoryReadout.textContent = `Current mode: ${label}. Conversation depth: ${depth}. Latest movement: ${movement}`;
+    }
 
     function setBusy(next) {
       inFlight = next;
       sendBtn.disabled = next;
       newThreadBtn.disabled = next;
       clearMemoryBtn.disabled = next;
-      document.querySelectorAll('.mode-btn, .action-btn, .quiet-btn, .chip').forEach(el => {
-        if (el.id !== 'sendBtn' && el.id !== 'newThreadBtn' && el.id !== 'clearMemoryBtn') {
-          el.disabled = next;
-        }
+      quickModeBtn.disabled = next;
+      document.querySelectorAll('.mode-option, .bridge-btn, .starter').forEach(el => {
+        el.disabled = next;
       });
       statusText.textContent = next ? 'Listening and shaping' : 'Ready for reflection';
     }
@@ -945,57 +793,6 @@
     function clearFlash() {
       flash.className = 'flash info';
       flash.textContent = '';
-    }
-
-    function scrollPath() {
-      pathFlow.scrollTop = pathFlow.scrollHeight;
-    }
-
-    function createPathNode(role, text, typeLabel) {
-      const node = document.createElement('div');
-      node.className = `path-node ${role === 'user' ? 'user' : 'ember'}`;
-      node.innerHTML = `
-        <div class="path-body">
-          <div class="path-meta">
-            <div class="path-title">${role === 'user' ? 'You' : 'Ember'}</div>
-            <div class="path-type">${typeLabel}</div>
-          </div>
-          <p></p>
-        </div>
-      `;
-      node.querySelector('p').textContent = text;
-      return node;
-    }
-
-    function addPathNode(role, text, typeLabel) {
-      const node = createPathNode(role, text, typeLabel);
-      pathFlow.appendChild(node);
-      scrollPath();
-      return node;
-    }
-
-    function showTyping() {
-      if (typingNode) return;
-      typingNode = document.createElement('div');
-      typingNode.className = 'path-node ember';
-      typingNode.innerHTML = `
-        <div class="path-body">
-          <div class="path-meta">
-            <div class="path-title">Ember</div>
-            <div class="path-type">Responding</div>
-          </div>
-          <div class="typing" aria-label="Ember is responding"><span></span><span></span><span></span></div>
-        </div>
-      `;
-      pathFlow.appendChild(typingNode);
-      scrollPath();
-    }
-
-    function hideTyping() {
-      if (typingNode) {
-        typingNode.remove();
-        typingNode = null;
-      }
     }
 
     function extractReply(data) {
@@ -1026,28 +823,19 @@
       return payload;
     }
 
-    function updateModeUI(mode) {
-      currentMode = mode;
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.mode === mode);
-      });
-
-      currentModeLabel.textContent = modeConfig[mode].label;
-      operationalAim.textContent = modeConfig[mode].aim;
-      modeHint.textContent = modeConfig[mode].hint;
-      memoryMode.textContent = modeConfig[mode].label;
+    function showResponse(text, typeLabel = 'Response') {
+      responseEmpty.style.display = 'none';
+      responseCard.style.display = 'block';
+      responseType.textContent = typeLabel;
+      responseText.textContent = text;
+      bridgeStrip.classList.add('show');
     }
 
-    function updateDepth() {
-      if (turnCount <= 0) {
-        memoryDepth.textContent = 'Just beginning.';
-      } else if (turnCount <= 2) {
-        memoryDepth.textContent = 'Early reflection.';
-      } else if (turnCount <= 5) {
-        memoryDepth.textContent = 'Developing clarity.';
-      } else {
-        memoryDepth.textContent = 'Deep active thread.';
-      }
+    function showTypingResponse() {
+      responseEmpty.style.display = 'none';
+      responseCard.style.display = 'block';
+      responseType.textContent = 'Responding';
+      responseText.innerHTML = '<span class="typing" aria-label="Ember is responding"><span></span><span></span><span></span></span>';
     }
 
     async function sendMessage(extraInstruction = '') {
@@ -1060,14 +848,11 @@
       }
 
       clearFlash();
-      addPathNode('user', message, modeConfig[currentMode].label);
-      entry.value = '';
-      turnCount += 1;
-      updateDepth();
-      memoryMovement.textContent = `You entered ${modeConfig[currentMode].label.toLowerCase()} mode.`;
-      bridgeState.textContent = 'Receiving and shaping.';
       setBusy(true);
-      showTyping();
+      showTypingResponse();
+      threadReadout.textContent = 'Thread: Active';
+      turnCount += 1;
+      updateMemoryReadout(`You entered ${modes[currentModeIndex].label.toLowerCase()} mode.`);
 
       try {
         const payload = {
@@ -1077,66 +862,53 @@
         };
 
         const data = await postJson('/chat', payload);
-        hideTyping();
-
         const reply = extractReply(data) || 'I am here. Say that again in the simplest honest way you can.';
-        addPathNode('assistant', reply, modeConfig[currentMode].label);
-
-        threadNote.textContent = 'Thread updated just now.';
-        bridgeState.textContent = 'Ready to bridge outward.';
-        memoryMovement.textContent = `Ember responded in ${modeConfig[currentMode].label.toLowerCase()} mode.`;
+        showResponse(reply, modes[currentModeIndex].label);
+        entry.value = '';
+        updateMemoryReadout(`Ember responded in ${modes[currentModeIndex].label.toLowerCase()} mode.`);
       } catch (error) {
-        hideTyping();
-        bridgeState.textContent = 'Blocked by an operational issue.';
+        responseCard.style.display = 'none';
+        responseEmpty.style.display = 'block';
+        bridgeStrip.classList.remove('show');
         showFlash(`Ember could not respond right now. ${error.message}`, 'error');
+        updateMemoryReadout('An operational issue interrupted the response.');
       } finally {
         setBusy(false);
         entry.focus();
       }
     }
 
-    modeGrid.addEventListener('click', (event) => {
-      const btn = event.target.closest('.mode-btn');
+    drawerToggle.addEventListener('click', () => {
+      drawer.classList.toggle('open');
+    });
+
+    quickModeBtn.addEventListener('click', () => {
+      currentModeIndex = (currentModeIndex + 1) % modes.length;
+      updateModeUI(modes[currentModeIndex].key);
+    });
+
+    modeOptions.addEventListener('click', (event) => {
+      const btn = event.target.closest('.mode-option');
       if (!btn || inFlight) return;
       updateModeUI(btn.dataset.mode);
     });
 
-    document.querySelectorAll('.chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const prefix = chip.dataset.insert || '';
-        entry.value = prefix + entry.value;
+    document.querySelectorAll('.starter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        entry.value = (btn.dataset.insert || '') + entry.value;
         entry.focus();
       });
     });
 
-    document.querySelectorAll('.refine-btn').forEach(btn => {
+    document.querySelectorAll('.bridge-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const instruction = btn.dataset.refine || '';
+        const instruction = btn.dataset.bridge || '';
         if (!entry.value.trim()) {
           entry.value = instruction + ' ';
           entry.focus();
           return;
         }
         sendMessage(instruction);
-      });
-    });
-
-    document.querySelectorAll('.action-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const action = btn.dataset.bridge;
-        const prompts = {
-          distill: 'Distill this into the core truth only.',
-          prepare: 'Turn this into words I could actually say to another person.',
-          boundary: 'Help me find the boundary or need inside this.',
-          nextstep: 'Turn this into one specific next move in real life.'
-        };
-        const prompt = prompts[action];
-        if (!entry.value.trim()) {
-          entry.value = prompt + ' ';
-          entry.focus();
-          return;
-        }
-        sendMessage(prompt);
       });
     });
 
@@ -1158,13 +930,14 @@
 
       try {
         await postJson('/reset', {});
-        pathFlow.innerHTML = '';
-        addPathNode('assistant', 'We are starting fresh. Begin with what feels most true right now.', 'Fresh thread');
-        threadNote.textContent = 'A new thread has started.';
-        bridgeState.textContent = 'Waiting for a first entry.';
-        memoryMovement.textContent = 'Thread reset.';
+        responseCard.style.display = 'none';
+        responseEmpty.style.display = 'block';
+        bridgeStrip.classList.remove('show');
+        responseText.textContent = '';
+        entry.value = '';
+        threadReadout.textContent = 'Thread: New';
         turnCount = 0;
-        updateDepth();
+        updateMemoryReadout('Thread reset.');
         showFlash('Started a new thread.', 'success');
       } catch (error) {
         showFlash(`Could not start a new thread. ${error.message}`, 'error');
@@ -1180,8 +953,7 @@
 
       try {
         await postJson('/memory/clear', {});
-        threadNote.textContent = 'Remembered context has been cleared.';
-        memoryMovement.textContent = 'Remembered context cleared.';
+        updateMemoryReadout('Remembered context cleared.');
         showFlash('Remembered context cleared.', 'success');
       } catch (error) {
         showFlash(`Could not clear remembered context. ${error.message}`, 'error');
