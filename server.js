@@ -1,13 +1,28 @@
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+// ---- Paths ----
+const ROOT_DIR = __dirname;
+const PUBLIC_DIR = path.join(ROOT_DIR, "public");
+const ROOT_INDEX = path.join(ROOT_DIR, "index.html");
+const PUBLIC_INDEX = path.join(PUBLIC_DIR, "index.html");
 
+// ---- Middleware ----
+app.use(express.json());
+
+// Serve static files from public/ if it exists, otherwise from root
+if (fs.existsSync(PUBLIC_DIR)) {
+  app.use(express.static(PUBLIC_DIR));
+} else {
+  app.use(express.static(ROOT_DIR));
+}
+
+// ---- Anthropic ----
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -72,10 +87,40 @@ Respond as Ember with a quiet reflective annotation.`,
   ];
 }
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+// ---- Health/debug ----
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    port: PORT,
+    rootDir: ROOT_DIR,
+    publicDirExists: fs.existsSync(PUBLIC_DIR),
+    rootIndexExists: fs.existsSync(ROOT_INDEX),
+    publicIndexExists: fs.existsSync(PUBLIC_INDEX),
+  });
 });
 
+// ---- Main route ----
+app.get("/", (req, res) => {
+  if (fs.existsSync(PUBLIC_INDEX)) {
+    return res.sendFile(PUBLIC_INDEX);
+  }
+
+  if (fs.existsSync(ROOT_INDEX)) {
+    return res.sendFile(ROOT_INDEX);
+  }
+
+  return res.status(404).send(`
+    <h1>Not Found</h1>
+    <p>index.html was not found.</p>
+    <p>Checked:</p>
+    <ul>
+      <li>${PUBLIC_INDEX}</li>
+      <li>${ROOT_INDEX}</li>
+    </ul>
+  `);
+});
+
+// ---- API ----
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -135,6 +180,21 @@ app.post("/memory/clear", (req, res) => {
   return res.json({ ok: true });
 });
 
+// ---- Fallback route ----
+app.get("*", (req, res) => {
+  if (fs.existsSync(PUBLIC_INDEX)) {
+    return res.sendFile(PUBLIC_INDEX);
+  }
+  if (fs.existsSync(ROOT_INDEX)) {
+    return res.sendFile(ROOT_INDEX);
+  }
+  return res.status(404).send("Not Found");
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`ROOT_DIR: ${ROOT_DIR}`);
+  console.log(`PUBLIC_DIR exists: ${fs.existsSync(PUBLIC_DIR)}`);
+  console.log(`ROOT_INDEX exists: ${fs.existsSync(ROOT_INDEX)}`);
+  console.log(`PUBLIC_INDEX exists: ${fs.existsSync(PUBLIC_INDEX)}`);
 });
