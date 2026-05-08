@@ -6,23 +6,19 @@ const Anthropic = require("@anthropic-ai/sdk");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ---- Paths ----
 const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const ROOT_INDEX = path.join(ROOT_DIR, "index.html");
 const PUBLIC_INDEX = path.join(PUBLIC_DIR, "index.html");
 
-// ---- Middleware ----
 app.use(express.json());
 
-// Serve static files from public/ if it exists, otherwise from root
 if (fs.existsSync(PUBLIC_DIR)) {
   app.use(express.static(PUBLIC_DIR));
 } else {
   app.use(express.static(ROOT_DIR));
 }
 
-// ---- Anthropic ----
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -87,7 +83,6 @@ Respond as Ember with a quiet reflective annotation.`,
   ];
 }
 
-// ---- Health/debug ----
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -99,7 +94,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-// ---- Main route ----
 app.get("/", (req, res) => {
   if (fs.existsSync(PUBLIC_INDEX)) {
     return res.sendFile(PUBLIC_INDEX);
@@ -120,7 +114,6 @@ app.get("/", (req, res) => {
   `);
 });
 
-// ---- API ----
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -178,17 +171,6 @@ app.post("/reset", (req, res) => {
 app.post("/memory/clear", (req, res) => {
   shortTermHistory = [];
   return res.json({ ok: true });
-});
-
-// ---- Fallback route ----
-app.get("*", (req, res) => {
-  if (fs.existsSync(PUBLIC_INDEX)) {
-    return res.sendFile(PUBLIC_INDEX);
-  }
-  if (fs.existsSync(ROOT_INDEX)) {
-    return res.sendFile(ROOT_INDEX);
-  }
-  return res.status(404).send("Not Found");
 });
 
 app.listen(PORT, () => {
