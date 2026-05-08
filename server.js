@@ -4,14 +4,15 @@ const express = require("express");
 const Anthropic = require("@anthropic-ai/sdk");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
+const HOST = "0.0.0.0";
 
 const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const ROOT_INDEX = path.join(ROOT_DIR, "index.html");
 const PUBLIC_INDEX = path.join(PUBLIC_DIR, "index.html");
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
 if (fs.existsSync(PUBLIC_DIR)) {
   app.use(express.static(PUBLIC_DIR));
@@ -19,9 +20,12 @@ if (fs.existsSync(PUBLIC_DIR)) {
   app.use(express.static(ROOT_DIR));
 }
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+let anthropic = null;
+if (process.env.ANTHROPIC_API_KEY) {
+  anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+}
 
 let shortTermHistory = [];
 
@@ -46,23 +50,21 @@ You hold interpretations lightly and let the user disagree.
 
 const EMBER_BEHAVIOR_RULES = `
 Behavior rules:
-
 - Think like a careful reader, not a helpful assistant.
 - Notice repetition, contradictions, avoided words, and abrupt conclusions.
 - Offer at most one focused question per reply.
 - Avoid bullet lists and numbered lists.
-- Avoid generic empathy phrases such as "That sounds really hard."
+- Avoid generic empathy phrases.
 - Avoid direct advice unless the user explicitly asks for it.
 - Use short, dense paragraphs.
 - Offer interpretations as possibilities, not certainties.
 - Never say "As an AI..."
-- It is acceptable to respond briefly if that is more accurate than a long answer.
 `;
 
 function buildMessages(userMessage) {
   const recentHistory = shortTermHistory.slice(-6);
-
   let historyText = "";
+
   for (const turn of recentHistory) {
     historyText += `User: ${turn.user}\nEmber: ${turn.ember}\n\n`;
   }
@@ -90,9 +92,10 @@ function getIndexPath() {
 }
 
 app.get("/health", (req, res) => {
-  res.json({
+  res.status(200).json({
     ok: true,
     port: PORT,
+    host: HOST,
     rootDir: ROOT_DIR,
     publicDirExists: fs.existsSync(PUBLIC_DIR),
     rootIndexExists: fs.existsSync(ROOT_INDEX),
@@ -114,8 +117,8 @@ app.get("/", (req, res) => {
     <p>index.html was not found.</p>
     <p>Checked:</p>
     <ul>
-      >${PUBLIC_INDEX}</li>
-      >${ROOT_INDEX}</li>
+      <li>${PUBLIC_INDEX}</li>
+      <li>${ROOT_INDEX}</li>
     </ul>
   `);
 });
@@ -131,9 +134,10 @@ app.post("/chat", async (req, res) => {
       });
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!anthropic) {
       return res.status(500).json({
-        error: "Missing ANTHROPIC_API_KEY environment variable."
+        error: "Anthropic client is not configured.",
+        details: "Missing ANTHROPIC_API_KEY."
       });
     }
 
@@ -145,8 +149,8 @@ app.post("/chat", async (req, res) => {
     });
 
     const reply = (response.content || [])
-      .filter(block => block.type === "text")
-      .map(block => block.text)
+      .filter((block) => block.type === "text")
+      .map((block) => block.text)
       .join(" ")
       .trim();
 
@@ -180,3 +184,30 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+app.post("/reset", (req, res) => {
+  shortTermHistory = [];
+  return res.json({ ok: true });
+});
+
+app.post("/memory/clear", (req, res) => {
+  shortTermHistory = [];
+  return res.json({ ok: true });
+});
+
+app.use((err, req, res, next) => {
+  console.error("UNHANDLED EXPRESS ERROR:", err);
+  res.status(500).json({
+    error: "Unhandled server error.",
+    details: err?.message || "Unknown error."
+  });
+});
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
+  console.log(`ROOT_DIR: ${ROOT_DIR}`);
+  console.log(`PUBLIC_DIR exists: ${fs.existsSync(PUBLIC_DIR)}`);
+  console.log(`ROOT_INDEX exists: ${fs.existsSync(ROOT_INDEX)}`);
+  console.log(`PUBLIC_INDEX exists: ${fs.existsSync(PUBLIC_INDEX)}`);
+  console.log(`ANTHROPIC KEY PRESENT: ${Boolean(process.env.ANTHROPIC_API_KEY)}`);
+  console.log(`ANTHROPIC MODEL: ${process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6"}`);
+});
