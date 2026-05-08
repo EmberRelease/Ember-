@@ -6,31 +6,25 @@ const Anthropic = require("@anthropic-ai/sdk");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ---------- Paths ----------
 const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const ROOT_INDEX = path.join(ROOT_DIR, "index.html");
 const PUBLIC_INDEX = path.join(PUBLIC_DIR, "index.html");
 
-// ---------- Middleware ----------
 app.use(express.json());
 
-// Serve static files from public/ if it exists, otherwise from root
 if (fs.existsSync(PUBLIC_DIR)) {
   app.use(express.static(PUBLIC_DIR));
 } else {
   app.use(express.static(ROOT_DIR));
 }
 
-// ---------- Anthropic ----------
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// ---------- Short-term session memory ----------
 let shortTermHistory = [];
 
-// ---------- Ember doctrine ----------
 const EMBER_HEARTBEAT = `
 You are Ember.
 
@@ -65,7 +59,6 @@ Behavior rules:
 - It is acceptable to respond briefly if that is more accurate than a long answer.
 `;
 
-// ---------- Helpers ----------
 function buildMessages(userMessage) {
   const recentHistory = shortTermHistory.slice(-6);
 
@@ -96,7 +89,6 @@ function getIndexPath() {
   return null;
 }
 
-// ---------- Health / Debug ----------
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -106,11 +98,10 @@ app.get("/health", (req, res) => {
     rootIndexExists: fs.existsSync(ROOT_INDEX),
     publicIndexExists: fs.existsSync(PUBLIC_INDEX),
     anthropicKeyPresent: Boolean(process.env.ANTHROPIC_API_KEY),
-    anthropicModel: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022",
+    anthropicModel: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
   });
 });
 
-// ---------- Main route ----------
 app.get("/", (req, res) => {
   const indexPath = getIndexPath();
 
@@ -123,13 +114,12 @@ app.get("/", (req, res) => {
     <p>index.html was not found.</p>
     <p>Checked:</p>
     <ul>
-      <li>${PUBLIC_INDEX}</li>
-      <li>${ROOT_INDEX}</li>
+      >${PUBLIC_INDEX}</li>
+      >${ROOT_INDEX}</li>
     </ul>
   `);
 });
 
-// ---------- Chat ----------
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
@@ -148,7 +138,7 @@ app.post("/chat", async (req, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022",
+      model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
       max_tokens: 500,
       system: `${EMBER_HEARTBEAT}\n\n${EMBER_BEHAVIOR_RULES}`,
       messages: buildMessages(message),
@@ -190,25 +180,3 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// ---------- Reset ----------
-app.post("/reset", (req, res) => {
-  shortTermHistory = [];
-  return res.json({ ok: true });
-});
-
-// ---------- Clear memory ----------
-app.post("/memory/clear", (req, res) => {
-  shortTermHistory = [];
-  return res.json({ ok: true });
-});
-
-// ---------- Start ----------
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`ROOT_DIR: ${ROOT_DIR}`);
-  console.log(`PUBLIC_DIR exists: ${fs.existsSync(PUBLIC_DIR)}`);
-  console.log(`ROOT_INDEX exists: ${fs.existsSync(ROOT_INDEX)}`);
-  console.log(`PUBLIC_INDEX exists: ${fs.existsSync(PUBLIC_INDEX)}`);
-  console.log(`ANTHROPIC KEY PRESENT: ${Boolean(process.env.ANTHROPIC_API_KEY)}`);
-  console.log(`ANTHROPIC MODEL: ${process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022"}`);
-});
