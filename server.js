@@ -6,25 +6,31 @@ const Anthropic = require("@anthropic-ai/sdk");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ---------- Paths ----------
 const ROOT_DIR = __dirname;
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const ROOT_INDEX = path.join(ROOT_DIR, "index.html");
 const PUBLIC_INDEX = path.join(PUBLIC_DIR, "index.html");
 
+// ---------- Middleware ----------
 app.use(express.json());
 
+// Serve static files from public/ if it exists, otherwise from root
 if (fs.existsSync(PUBLIC_DIR)) {
   app.use(express.static(PUBLIC_DIR));
 } else {
   app.use(express.static(ROOT_DIR));
 }
 
+// ---------- Anthropic ----------
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// ---------- Short-term session memory ----------
 let shortTermHistory = [];
 
+// ---------- Ember doctrine ----------
 const EMBER_HEARTBEAT = `
 You are Ember.
 
@@ -59,6 +65,7 @@ Behavior rules:
 - It is acceptable to respond briefly if that is more accurate than a long answer.
 `;
 
+// ---------- Helpers ----------
 function buildMessages(userMessage) {
   const recentHistory = shortTermHistory.slice(-6);
 
@@ -83,6 +90,13 @@ Respond as Ember with a quiet reflective annotation.`,
   ];
 }
 
+function getIndexPath() {
+  if (fs.existsSync(PUBLIC_INDEX)) return PUBLIC_INDEX;
+  if (fs.existsSync(ROOT_INDEX)) return ROOT_INDEX;
+  return null;
+}
+
+// ---------- Health / Debug ----------
 app.get("/health", (req, res) => {
   res.json({
     ok: true,
@@ -91,16 +105,17 @@ app.get("/health", (req, res) => {
     publicDirExists: fs.existsSync(PUBLIC_DIR),
     rootIndexExists: fs.existsSync(ROOT_INDEX),
     publicIndexExists: fs.existsSync(PUBLIC_INDEX),
+    anthropicKeyPresent: Boolean(process.env.ANTHROPIC_API_KEY),
+    anthropicModel: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022",
   });
 });
 
+// ---------- Main route ----------
 app.get("/", (req, res) => {
-  if (fs.existsSync(PUBLIC_INDEX)) {
-    return res.sendFile(PUBLIC_INDEX);
-  }
+  const indexPath = getIndexPath();
 
-  if (fs.existsSync(ROOT_INDEX)) {
-    return res.sendFile(ROOT_INDEX);
+  if (indexPath) {
+    return res.sendFile(indexPath);
   }
 
   return res.status(404).send(`
@@ -114,17 +129,21 @@ app.get("/", (req, res) => {
   `);
 });
 
+// ---------- Chat ----------
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
     if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: "Missing message." });
+      return res.status(400).json({
+        error: "Missing message.",
+        details: "Request body must include { message: string }."
+      });
     }
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(500).json({
-        error: "Missing ANTHROPIC_API_KEY environment variable.",
+        error: "Missing ANTHROPIC_API_KEY environment variable."
       });
     }
 
@@ -142,7 +161,11 @@ app.post("/chat", async (req, res) => {
       .trim();
 
     if (!reply) {
-      return res.status(500).json({ error: "Model returned no text." });
+      console.error("MODEL RETURNED NO TEXT:", response);
+      return res.status(500).json({
+        error: "Model returned no text.",
+        details: "Anthropic response contained no text blocks."
+      });
     }
 
     shortTermHistory.push({
@@ -155,28 +178,37 @@ app.post("/chat", async (req, res) => {
 
     return res.json({ reply });
   } catch (error) {
-    console.error("CHAT ERROR:", error);
+    console.error("CHAT ERROR FULL:", error);
+
     return res.status(500).json({
       error: "Ember encountered a problem.",
-      details: error.message || "Unknown server error.",
+      details: error?.message || "Unknown server error.",
+      status: error?.status || null,
+      type: error?.error?.type || null,
+      apiMessage: error?.error?.message || null
     });
   }
 });
 
+// ---------- Reset ----------
 app.post("/reset", (req, res) => {
   shortTermHistory = [];
   return res.json({ ok: true });
 });
 
+// ---------- Clear memory ----------
 app.post("/memory/clear", (req, res) => {
   shortTermHistory = [];
   return res.json({ ok: true });
 });
 
+// ---------- Start ----------
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`ROOT_DIR: ${ROOT_DIR}`);
   console.log(`PUBLIC_DIR exists: ${fs.existsSync(PUBLIC_DIR)}`);
   console.log(`ROOT_INDEX exists: ${fs.existsSync(ROOT_INDEX)}`);
   console.log(`PUBLIC_INDEX exists: ${fs.existsSync(PUBLIC_INDEX)}`);
+  console.log(`ANTHROPIC KEY PRESENT: ${Boolean(process.env.ANTHROPIC_API_KEY)}`);
+  console.log(`ANTHROPIC MODEL: ${process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022"}`);
 });
